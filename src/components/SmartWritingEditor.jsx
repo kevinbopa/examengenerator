@@ -1,4 +1,11 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+  applySuggestionToText,
+  buildSuggestionId,
+  getNonOverlappingSuggestions,
+  mergeSuggestionRewrite,
+  pruneIgnoredIds
+} from "../utils/writingAssistant";
 
 const TYPE_LABELS = {
   orthographe: "Orthographe",
@@ -36,8 +43,10 @@ export default function SmartWritingEditor({
   const activeSuggestion = visibleSuggestions.find(
     (suggestion) => suggestion.id === activeSuggestionId
   );
+  const editorId = `smart-editor-${questionId}`;
 
   useEffect(() => {
+    requestIdRef.current += 1;
     setSuggestions([]);
     setIgnoredIds([]);
     setActiveSuggestionId(null);
@@ -49,8 +58,11 @@ export default function SmartWritingEditor({
   useEffect(() => {
     const trimmed = (value || "").trim();
     if (!trimmed || trimmed.length < 25) {
+      requestIdRef.current += 1;
       setSuggestions([]);
+      setIgnoredIds([]);
       setActiveSuggestionId(null);
+      setPopoverPosition(null);
       setStatus("idle");
       return undefined;
     }
@@ -86,7 +98,7 @@ export default function SmartWritingEditor({
 
         setSuggestions(nextSuggestions);
         setIgnoredIds((current) =>
-          current.filter((id) => nextSuggestions.some((suggestion) => suggestion.id === id))
+          pruneIgnoredIds(current, nextSuggestions)
         );
         setStatus(nextSuggestions.length ? "ready" : "clean");
       } catch {
@@ -102,9 +114,17 @@ export default function SmartWritingEditor({
   }, [value]);
 
   useEffect(() => {
+    if (!activeSuggestion && activeSuggestionId) {
+      setActiveSuggestionId(null);
+      setPopoverPosition(null);
+    }
+  }, [activeSuggestion, activeSuggestionId]);
+
+  useEffect(() => {
     function handleDocumentClick(event) {
       if (!shellRef.current?.contains(event.target)) {
         setActiveSuggestionId(null);
+        setPopoverPosition(null);
       }
     }
 
@@ -196,10 +216,7 @@ export default function SmartWritingEditor({
       const refinedSuggestion = payload.suggestions?.[0];
 
       if (refinedSuggestion) {
-        const nextSuggestion = {
-          ...refinedSuggestion,
-          id: activeSuggestion.id
-        };
+        const nextSuggestion = mergeSuggestionRewrite(activeSuggestion, refinedSuggestion);
 
         setSuggestions((current) =>
           current.map((suggestion) =>
@@ -208,7 +225,7 @@ export default function SmartWritingEditor({
         );
         setStatus("ready");
       } else {
-        setStatus("clean");
+        setStatus("ready");
       }
     } catch {
       setStatus("error");
@@ -222,6 +239,8 @@ export default function SmartWritingEditor({
 
     const nextValue = applySuggestionToText(value || "", activeSuggestion);
     onChange(nextValue);
+    setSuggestions([]);
+    setIgnoredIds([]);
     setHistory((current) => [
       {
         original: activeSuggestion.original,
@@ -239,7 +258,7 @@ export default function SmartWritingEditor({
       return;
     }
 
-    setIgnoredIds((current) => [...current, activeSuggestion.id]);
+    setIgnoredIds((current) => [...new Set([...current, activeSuggestion.id])]);
     setActiveSuggestionId(null);
     setPopoverPosition(null);
   }
@@ -260,7 +279,7 @@ export default function SmartWritingEditor({
 
       <div className="smart-editor-shell" ref={shellRef}>
         <div
-          id="smart-editor"
+          id={editorId}
           ref={editorRef}
           className="smart-editor"
           contentEditable
@@ -346,21 +365,12 @@ export default function SmartWritingEditor({
   );
 }
 
-function buildSuggestionId(suggestion, index) {
-  return [
-    suggestion.startIndex,
-    suggestion.endIndex,
-    suggestion.type,
-    index
-  ].join("-");
-}
-
 function renderHighlightedHtml(text, suggestions, activeSuggestionId) {
   if (!text) {
     return "";
   }
 
-  const sortedSuggestions = [...suggestions].sort((left, right) => left.startIndex - right.startIndex);
+  const sortedSuggestions = getNonOverlappingSuggestions(suggestions);
   const segments = [];
   let cursor = 0;
 
@@ -477,26 +487,4 @@ function locatePosition(root, targetOffset) {
     node: root,
     offset: root.childNodes.length
   };
-}
-
-function applySuggestionToText(text, suggestion) {
-  const directMatch = text.slice(suggestion.startIndex, suggestion.endIndex);
-  if (directMatch === suggestion.original) {
-    return (
-      text.slice(0, suggestion.startIndex) +
-      suggestion.corrected +
-      text.slice(suggestion.endIndex)
-    );
-  }
-
-  const fallbackIndex = text.indexOf(suggestion.original);
-  if (fallbackIndex === -1) {
-    return text;
-  }
-
-  return (
-    text.slice(0, fallbackIndex) +
-    suggestion.corrected +
-    text.slice(fallbackIndex + suggestion.original.length)
-  );
 }

@@ -26,6 +26,13 @@ Les tests backend couvrent d'abord les comportements de secours et de validation
 - `POST /api/generate-corrected-copy`
 - `POST /writing-assistant/correct`
 
+La suite couvre aussi la logique critique de l'assistant linguistique :
+- identifiants de suggestions;
+- filtrage des chevauchements;
+- conservation des suggestions ignorees valides;
+- fusion d'une reformulation ciblee;
+- application robuste d'une correction au texte.
+
 ## Pourquoi le mode fallback en premier
 
 Le mode fallback est le plus stable pour une suite automatique locale car :
@@ -38,4 +45,3 @@ Le mode fallback est le plus stable pour une suite automatique locale car :
 1. Ajouter des tests unitaires sur les fonctions de sanitation et de schemas.
 2. Introduire des tests d'integration avec mocking d'OpenAI.
 3. Ajouter des tests frontend sur les parcours critiques.
-
