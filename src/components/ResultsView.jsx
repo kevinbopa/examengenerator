@@ -1,4 +1,5 @@
 import { gradeLabel, sectionScores } from "../utils/grading";
+import { buildCorrectedCopyView } from "../utils/correctedCopy";
 
 export default function ResultsView({
   exam,
@@ -14,6 +15,7 @@ export default function ResultsView({
   const strongQuestions = result.gradedQuestions.filter((question) => question.percentage >= 70).length;
   const weakQuestions = result.gradedQuestions.length - strongQuestions;
   const overall = result.overallFeedback || {};
+  const correctedCopyView = buildCorrectedCopyView(correctedCopy);
 
   return (
     <section className="results-layout">
@@ -266,23 +268,26 @@ export default function ResultsView({
         {correctedCopy ? (
           <div className="corrected-copy-stack">
             <article className="feedback-note-card full-span">
-              <p>{correctedCopy.summary}</p>
+              <p>{correctedCopyView.summary}</p>
             </article>
-            {correctedCopy.entries.map((entry, index) => (
+            {correctedCopyView.hasEntries ? correctedCopyView.entries.map((entry, index) => (
               <article className="corrected-copy-card" key={`${entry.questionId}-${index}`}>
                 <div className="corrected-copy-head">
                   <div>
-                    <p>Question liee</p>
+                    <p>{entry.sectionLabel || "Question liee"}</p>
                     <h4>{entry.topic}</h4>
                   </div>
                 </div>
+                <p className="review-prompt">{entry.prompt}</p>
                 <div className="corrected-copy-grid">
                   <div>
                     <strong>Version originale</strong>
+                    <small>{entry.meaningBadge}</small>
                     <p>{entry.original}</p>
                   </div>
                   <div>
                     <strong>Version corrigee</strong>
+                    <small>{entry.formBadge}</small>
                     <p>{entry.corrected}</p>
                   </div>
                 </div>
@@ -290,7 +295,11 @@ export default function ResultsView({
                   <strong>Note :</strong> {entry.note}
                 </p>
               </article>
-            ))}
+            )) : (
+              <article className="feedback-note-card full-span">
+                <p>Aucune reponse redigee n'etait disponible pour produire une copie corrigee.</p>
+              </article>
+            )}
           </div>
         ) : null}
       </section>

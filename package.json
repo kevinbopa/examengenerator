@@ -9,7 +9,7 @@
     "dev:server": "node --watch server/index.mjs",
     "build": "vite build",
     "graphify:build": "powershell -ExecutionPolicy Bypass -File scripts/run-graphify-bootstrap.ps1",
-    "test": "node --test tests/backend.test.mjs tests/writing-assistant-utils.test.mjs",
+    "test": "node --test tests/backend.test.mjs tests/writing-assistant-utils.test.mjs tests/corrected-copy-utils.test.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

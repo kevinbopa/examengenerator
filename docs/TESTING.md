@@ -33,6 +33,13 @@ La suite couvre aussi la logique critique de l'assistant linguistique :
 - fusion d'une reformulation ciblee;
 - application robuste d'une correction au texte.
 
+La suite couvre aussi la logique critique de la copie corrigee :
+- normalisation stricte des entrees retournees;
+- conservation de l'ordre reel des questions redigees;
+- preservation du texte original de l'etudiant;
+- fallback propre si la reformulation est absente ou partielle;
+- construction d'un modele d'affichage clair pour l'UI.
+
 ## Pourquoi le mode fallback en premier
 
 Le mode fallback est le plus stable pour une suite automatique locale car :

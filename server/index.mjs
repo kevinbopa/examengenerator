@@ -5,6 +5,7 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import OpenAI from "openai";
 import { examBlueprint, flattenQuestions } from "../src/data/examData.js";
+import { normalizeCorrectedCopyPayload } from "../src/utils/correctedCopy.js";
 import { gradeExam } from "../src/utils/grading.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -148,7 +149,7 @@ app.post("/api/generate-corrected-copy", async (request, response) => {
   try {
     const correctedCopy = await generateCorrectedCopyWithAI(exam, answersById);
     response.json({
-      correctedCopy,
+      correctedCopy: normalizeCorrectedCopyPayload(exam, answersById, correctedCopy),
       mode: "ai"
     });
   } catch (error) {
@@ -460,23 +461,17 @@ function buildFallbackExam() {
 }
 
 function buildFallbackCorrectedCopy(exam, answersById) {
-  const entries = flattenQuestions(exam)
-    .filter((question) => question.type !== "mcq")
-    .map((question) => ({
-      questionId: question.id,
-      topic: question.topic,
-      original: answersById[question.id] || "",
-      corrected: answersById[question.id] || "",
-      note:
-        "Copie corrigee indisponible sans IA. Le texte original est conserve tel quel."
-    }))
-    .filter((entry) => entry.original.trim());
-
-  return {
+  return normalizeCorrectedCopyPayload(exam, answersById, {
     summary:
       "Version de secours : aucune reformulation linguistique n'a pu etre generee automatiquement.",
-    entries
-  };
+    entries: flattenQuestions(exam)
+      .filter((question) => question.type !== "mcq")
+      .map((question) => ({
+        questionId: question.id,
+        note:
+          "Copie corrigee indisponible sans IA. Le texte original est conserve tel quel."
+      }))
+  });
 }
 
 function seedBankForPrompt() {
