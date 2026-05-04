@@ -2,7 +2,7 @@ import "dotenv/config";
 import express from "express";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import OpenAI from "openai";
 import { examBlueprint, flattenQuestions } from "../src/data/examData.js";
 import { gradeExam } from "../src/utils/grading.js";
@@ -13,7 +13,7 @@ const projectRoot = path.resolve(__dirname, "..");
 const chapterFile = path.join(projectRoot, "H26_GLO2003_09_Agilite_XP.md");
 const examplesFile = path.join(projectRoot, "examens.md");
 
-const app = express();
+export const app = express();
 app.use(express.json({ limit: "3mb" }));
 
 app.get("/api/health", (_request, response) => {
@@ -160,10 +160,25 @@ app.post("/api/generate-corrected-copy", async (request, response) => {
   }
 });
 
-const port = Number(process.env.EXAM_SERVER_PORT || 8787);
-app.listen(port, () => {
-  console.log(`Exam API listening on http://127.0.0.1:${port}`);
-});
+export function startServer(port = Number(process.env.EXAM_SERVER_PORT || 8787)) {
+  return app.listen(port, () => {
+    console.log(`Exam API listening on http://127.0.0.1:${port}`);
+  });
+}
+
+function shouldAutoStartServer() {
+  if (process.env.EXAM_SERVER_DISABLE_AUTOSTART === "1") {
+    return false;
+  }
+
+  const currentModuleUrl = import.meta.url;
+  const entryScript = process.argv[1] ? pathToFileURL(process.argv[1]).href : null;
+  return currentModuleUrl === entryScript;
+}
+
+if (shouldAutoStartServer()) {
+  startServer();
+}
 
 async function generateExamWithAI(chapterId) {
   const [chapterText, examplesText] = await Promise.all([

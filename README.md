@@ -55,6 +55,20 @@ npm run dev
 
 [http://localhost:5173](http://localhost:5173)
 
+## Tests
+
+Lancer les tests backend :
+
+```powershell
+npm test
+```
+
+La strategie actuelle couvre d'abord les endpoints critiques en mode fallback :
+- generation d'examen;
+- correction d'examen;
+- copie corrigee;
+- assistant linguistique.
+
 ## Structure
 
 ```text
