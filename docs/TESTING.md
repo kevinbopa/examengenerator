@@ -40,6 +40,12 @@ La suite couvre aussi la logique critique de la copie corrigee :
 - fallback propre si la reformulation est absente ou partielle;
 - construction d'un modele d'affichage clair pour l'UI.
 
+La suite couvre aussi la formalisation des prompts IA :
+- contraintes de severite pedagogique;
+- separation contenu / langue;
+- preservation du fond dans les aides linguistiques;
+- contraintes explicites de generation et de correction.
+
 ## Pourquoi le mode fallback en premier
 
 Le mode fallback est le plus stable pour une suite automatique locale car :
