@@ -2,7 +2,7 @@
 
 ## Epic 1 - Fondations produit
 
-- [ ] Initialiser le depot Git et le workflow GitHub
+- [x] Initialiser le depot Git et le workflow GitHub
 - [ ] Nettoyer les artefacts et fichiers legacy
 - [ ] Documenter l'architecture actuelle
 - [ ] Ajouter une strategie de tests frontend et backend
@@ -17,13 +17,13 @@
 ## Epic 3 - Correction intelligente
 
 - [ ] Renforcer la correction IA par bareme structure
-- [ ] Ajouter une copie corrigee complete et lisible
+- [~] Ajouter une copie corrigee complete et lisible
 - [ ] Afficher un diagnostic par concept
 - [ ] Produire un feedback severe mais explicatif
 
 ## Epic 4 - Assistant linguistique
 
-- [ ] Stabiliser la detection temps reel
+- [~] Stabiliser la detection temps reel
 - [ ] Permettre la correction phrase par phrase
 - [ ] Ajouter un mode style academique plus fin
 - [ ] Conserver un historique leger et fiable
@@ -37,8 +37,15 @@
 
 ## Sprint 0 propose
 
-- [ ] Initialiser Git et GitHub
-- [ ] Poser le cadre de travail agile
-- [ ] Verifier l'etat du build
-- [ ] Definir les premieres stories priorisees
+- [x] Initialiser Git et GitHub
+- [x] Poser le cadre de travail agile
+- [x] Verifier l'etat du build
+- [x] Definir les premieres stories priorisees
 
+## Sprint 1 prioritaire
+
+- [ ] Documenter l'architecture fonctionnelle et technique actuelle
+- [ ] Ajouter des tests backend pour la generation et la correction IA
+- [ ] Stabiliser l'assistant linguistique dans les reponses longues
+- [ ] Finaliser la copie corrigee avec une UX lisible et exploitable
+- [ ] Formaliser les prompts de generation et de correction avec des sorties structurees

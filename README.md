@@ -66,6 +66,8 @@ server/
   index.mjs
 docs/
   BACKLOG.md
+  ROADMAP.md
+  SPRINT_01.md
   WORKFLOW.md
 ```
 
@@ -74,6 +76,8 @@ docs/
 - [H26_GLO2003_09_Agilite_XP.md](./H26_GLO2003_09_Agilite_XP.md)
 - [examens.md](./examens.md)
 - [mvp_correction_ia_structured_tdd.md](./mvp_correction_ia_structured_tdd.md)
+- [docs/ROADMAP.md](./docs/ROADMAP.md)
+- [docs/SPRINT_01.md](./docs/SPRINT_01.md)
 
 ## Principes de travail
 
@@ -83,4 +87,3 @@ docs/
 - code simple et evolutif;
 - une user story a la fois;
 - aucune fonction IA sans garde-fous clairs.
-
