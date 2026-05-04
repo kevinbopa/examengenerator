@@ -15,3 +15,9 @@ npm-debug.log*
 .idea/
 .vscode/
 
+.codex/
+.graphify-local/
+.graphify-venv/
+
+graphify-out/manifest.json
+graphify-out/cost.json
