@@ -1,0 +1,1509 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "label": "vite.config.js",
+      "file_type": "code",
+      "source_file": "vite.config.js",
+      "source_location": "L1",
+      "id": "vite_config_js",
+      "community": 13,
+      "norm_label": "vite.config.js"
+    },
+    {
+      "label": "build_graphify_bootstrap.py",
+      "file_type": "code",
+      "source_file": "scripts/build_graphify_bootstrap.py",
+      "source_location": "L1",
+      "id": "scripts_build_graphify_bootstrap_py",
+      "community": 6,
+      "norm_label": "build_graphify_bootstrap.py"
+    },
+    {
+      "label": "build_community_labels()",
+      "file_type": "code",
+      "source_file": "scripts/build_graphify_bootstrap.py",
+      "source_location": "L26",
+      "id": "scripts_build_graphify_bootstrap_build_community_labels",
+      "community": 6,
+      "norm_label": "build_community_labels()"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "scripts/build_graphify_bootstrap.py",
+      "source_location": "L39",
+      "id": "scripts_build_graphify_bootstrap_main",
+      "community": 6,
+      "norm_label": "main()"
+    },
+    {
+      "label": "run-graphify-bootstrap.ps1",
+      "file_type": "code",
+      "source_file": "scripts/run-graphify-bootstrap.ps1",
+      "source_location": "L1",
+      "id": "scripts_run_graphify_bootstrap_ps1",
+      "community": 14,
+      "norm_label": "run-graphify-bootstrap.ps1"
+    },
+    {
+      "label": "index.mjs",
+      "file_type": "code",
+      "source_file": "server/index.mjs",
+      "source_location": "L1",
+      "id": "server_index_mjs",
+      "community": 2,
+      "norm_label": "index.mjs"
+    },
+    {
+      "label": "generateExamWithAI()",
+      "file_type": "code",
+      "source_file": "server/index.mjs",
+      "source_location": "L168",
+      "id": "server_index_generateexamwithai",
+      "community": 5,
+      "norm_label": "generateexamwithai()"
+    },
+    {
+      "label": "evaluateExamWithAI()",
+      "file_type": "code",
+      "source_file": "server/index.mjs",
+      "source_location": "L229",
+      "id": "server_index_evaluateexamwithai",
+      "community": 2,
+      "norm_label": "evaluateexamwithai()"
+    },
+    {
+      "label": "runWritingAssistant()",
+      "file_type": "code",
+      "source_file": "server/index.mjs",
+      "source_location": "L295",
+      "id": "server_index_runwritingassistant",
+      "community": 7,
+      "norm_label": "runwritingassistant()"
+    },
+    {
+      "label": "generateCorrectedCopyWithAI()",
+      "file_type": "code",
+      "source_file": "server/index.mjs",
+      "source_location": "L371",
+      "id": "server_index_generatecorrectedcopywithai",
+      "community": 3,
+      "norm_label": "generatecorrectedcopywithai()"
+    },
+    {
+      "label": "buildFallbackExam()",
+      "file_type": "code",
+      "source_file": "server/index.mjs",
+      "source_location": "L431",
+      "id": "server_index_buildfallbackexam",
+      "community": 2,
+      "norm_label": "buildfallbackexam()"
+    },
+    {
+      "label": "buildFallbackCorrectedCopy()",
+      "file_type": "code",
+      "source_file": "server/index.mjs",
+      "source_location": "L447",
+      "id": "server_index_buildfallbackcorrectedcopy",
+      "community": 3,
+      "norm_label": "buildfallbackcorrectedcopy()"
+    },
+    {
+      "label": "seedBankForPrompt()",
+      "file_type": "code",
+      "source_file": "server/index.mjs",
+      "source_location": "L467",
+      "id": "server_index_seedbankforprompt",
+      "community": 5,
+      "norm_label": "seedbankforprompt()"
+    },
+    {
+      "label": "sectionGenerationPlan()",
+      "file_type": "code",
+      "source_file": "server/index.mjs",
+      "source_location": "L480",
+      "id": "server_index_sectiongenerationplan",
+      "community": 5,
+      "norm_label": "sectiongenerationplan()"
+    },
+    {
+      "label": "sanitizeGeneratedExam()",
+      "file_type": "code",
+      "source_file": "server/index.mjs",
+      "source_location": "L499",
+      "id": "server_index_sanitizegeneratedexam",
+      "community": 5,
+      "norm_label": "sanitizegeneratedexam()"
+    },
+    {
+      "label": "sanitizeEvaluation()",
+      "file_type": "code",
+      "source_file": "server/index.mjs",
+      "source_location": "L533",
+      "id": "server_index_sanitizeevaluation",
+      "community": 2,
+      "norm_label": "sanitizeevaluation()"
+    },
+    {
+      "label": "slugify()",
+      "file_type": "code",
+      "source_file": "server/index.mjs",
+      "source_location": "L574",
+      "id": "server_index_slugify",
+      "community": 2,
+      "norm_label": "slugify()"
+    },
+    {
+      "label": "shuffle()",
+      "file_type": "code",
+      "source_file": "server/index.mjs",
+      "source_location": "L583",
+      "id": "server_index_shuffle",
+      "community": 2,
+      "norm_label": "shuffle()"
+    },
+    {
+      "label": "defaultSectionMinutes()",
+      "file_type": "code",
+      "source_file": "server/index.mjs",
+      "source_location": "L592",
+      "id": "server_index_defaultsectionminutes",
+      "community": 2,
+      "norm_label": "defaultsectionminutes()"
+    },
+    {
+      "label": "attachSuggestionPositions()",
+      "file_type": "code",
+      "source_file": "server/index.mjs",
+      "source_location": "L599",
+      "id": "server_index_attachsuggestionpositions",
+      "community": 7,
+      "norm_label": "attachsuggestionpositions()"
+    },
+    {
+      "label": "examSchema()",
+      "file_type": "code",
+      "source_file": "server/index.mjs",
+      "source_location": "L658",
+      "id": "server_index_examschema",
+      "community": 4,
+      "norm_label": "examschema()"
+    },
+    {
+      "label": "evaluationSchema()",
+      "file_type": "code",
+      "source_file": "server/index.mjs",
+      "source_location": "L697",
+      "id": "server_index_evaluationschema",
+      "community": 2,
+      "norm_label": "evaluationschema()"
+    },
+    {
+      "label": "mcqSchema()",
+      "file_type": "code",
+      "source_file": "server/index.mjs",
+      "source_location": "L796",
+      "id": "server_index_mcqschema",
+      "community": 4,
+      "norm_label": "mcqschema()"
+    },
+    {
+      "label": "writtenSchema()",
+      "file_type": "code",
+      "source_file": "server/index.mjs",
+      "source_location": "L828",
+      "id": "server_index_writtenschema",
+      "community": 4,
+      "norm_label": "writtenschema()"
+    },
+    {
+      "label": "codeSchema()",
+      "file_type": "code",
+      "source_file": "server/index.mjs",
+      "source_location": "L857",
+      "id": "server_index_codeschema",
+      "community": 4,
+      "norm_label": "codeschema()"
+    },
+    {
+      "label": "criteriaSchema()",
+      "file_type": "code",
+      "source_file": "server/index.mjs",
+      "source_location": "L890",
+      "id": "server_index_criteriaschema",
+      "community": 4,
+      "norm_label": "criteriaschema()"
+    },
+    {
+      "label": "correctedCopySchema()",
+      "file_type": "code",
+      "source_file": "server/index.mjs",
+      "source_location": "L918",
+      "id": "server_index_correctedcopyschema",
+      "community": 3,
+      "norm_label": "correctedcopyschema()"
+    },
+    {
+      "label": "writingAssistantSchema()",
+      "file_type": "code",
+      "source_file": "server/index.mjs",
+      "source_location": "L949",
+      "id": "server_index_writingassistantschema",
+      "community": 7,
+      "norm_label": "writingassistantschema()"
+    },
+    {
+      "label": "findNormalizedRange()",
+      "file_type": "code",
+      "source_file": "server/index.mjs",
+      "source_location": "L979",
+      "id": "server_index_findnormalizedrange",
+      "community": 2,
+      "norm_label": "findnormalizedrange()"
+    },
+    {
+      "label": "App.jsx",
+      "file_type": "code",
+      "source_file": "src/App.jsx",
+      "source_location": "L1",
+      "id": "src_app_jsx",
+      "community": 3,
+      "norm_label": "app.jsx"
+    },
+    {
+      "label": "App()",
+      "file_type": "code",
+      "source_file": "src/App.jsx",
+      "source_location": "L10",
+      "id": "src_app_app",
+      "community": 3,
+      "norm_label": "app()"
+    },
+    {
+      "label": "main.jsx",
+      "file_type": "code",
+      "source_file": "src/main.jsx",
+      "source_location": "L1",
+      "id": "src_main_jsx",
+      "community": 15,
+      "norm_label": "main.jsx"
+    },
+    {
+      "label": "AppSidebar.jsx",
+      "file_type": "code",
+      "source_file": "src/components/AppSidebar.jsx",
+      "source_location": "L1",
+      "id": "src_components_appsidebar_jsx",
+      "community": 10,
+      "norm_label": "appsidebar.jsx"
+    },
+    {
+      "label": "AppSidebar()",
+      "file_type": "code",
+      "source_file": "src/components/AppSidebar.jsx",
+      "source_location": "L10",
+      "id": "components_appsidebar_appsidebar",
+      "community": 10,
+      "norm_label": "appsidebar()"
+    },
+    {
+      "label": "ExamWorkspace.jsx",
+      "file_type": "code",
+      "source_file": "src/components/ExamWorkspace.jsx",
+      "source_location": "L1",
+      "id": "src_components_examworkspace_jsx",
+      "community": 8,
+      "norm_label": "examworkspace.jsx"
+    },
+    {
+      "label": "ExamWorkspace()",
+      "file_type": "code",
+      "source_file": "src/components/ExamWorkspace.jsx",
+      "source_location": "L3",
+      "id": "components_examworkspace_examworkspace",
+      "community": 8,
+      "norm_label": "examworkspace()"
+    },
+    {
+      "label": "formatTime()",
+      "file_type": "code",
+      "source_file": "src/components/ExamWorkspace.jsx",
+      "source_location": "L89",
+      "id": "components_examworkspace_formattime",
+      "community": 8,
+      "norm_label": "formattime()"
+    },
+    {
+      "label": "Hero.jsx",
+      "file_type": "code",
+      "source_file": "src/components/Hero.jsx",
+      "source_location": "L1",
+      "id": "src_components_hero_jsx",
+      "community": 11,
+      "norm_label": "hero.jsx"
+    },
+    {
+      "label": "Hero()",
+      "file_type": "code",
+      "source_file": "src/components/Hero.jsx",
+      "source_location": "L4",
+      "id": "components_hero_hero",
+      "community": 11,
+      "norm_label": "hero()"
+    },
+    {
+      "label": "HeroVisual.jsx",
+      "file_type": "code",
+      "source_file": "src/components/HeroVisual.jsx",
+      "source_location": "L1",
+      "id": "src_components_herovisual_jsx",
+      "community": 12,
+      "norm_label": "herovisual.jsx"
+    },
+    {
+      "label": "HeroVisual()",
+      "file_type": "code",
+      "source_file": "src/components/HeroVisual.jsx",
+      "source_location": "L1",
+      "id": "components_herovisual_herovisual",
+      "community": 12,
+      "norm_label": "herovisual()"
+    },
+    {
+      "label": "QuestionRenderer.jsx",
+      "file_type": "code",
+      "source_file": "src/components/QuestionRenderer.jsx",
+      "source_location": "L1",
+      "id": "src_components_questionrenderer_jsx",
+      "community": 9,
+      "norm_label": "questionrenderer.jsx"
+    },
+    {
+      "label": "optionLetter()",
+      "file_type": "code",
+      "source_file": "src/components/QuestionRenderer.jsx",
+      "source_location": "L3",
+      "id": "components_questionrenderer_optionletter",
+      "community": 9,
+      "norm_label": "optionletter()"
+    },
+    {
+      "label": "QuestionRenderer()",
+      "file_type": "code",
+      "source_file": "src/components/QuestionRenderer.jsx",
+      "source_location": "L7",
+      "id": "components_questionrenderer_questionrenderer",
+      "community": 9,
+      "norm_label": "questionrenderer()"
+    },
+    {
+      "label": "ResultsView.jsx",
+      "file_type": "code",
+      "source_file": "src/components/ResultsView.jsx",
+      "source_location": "L1",
+      "id": "src_components_resultsview_jsx",
+      "community": 0,
+      "norm_label": "resultsview.jsx"
+    },
+    {
+      "label": "ResultsView()",
+      "file_type": "code",
+      "source_file": "src/components/ResultsView.jsx",
+      "source_location": "L3",
+      "id": "components_resultsview_resultsview",
+      "community": 0,
+      "norm_label": "resultsview()"
+    },
+    {
+      "label": "formatTime()",
+      "file_type": "code",
+      "source_file": "src/components/ResultsView.jsx",
+      "source_location": "L307",
+      "id": "components_resultsview_formattime",
+      "community": 0,
+      "norm_label": "formattime()"
+    },
+    {
+      "label": "RightRail.jsx",
+      "file_type": "code",
+      "source_file": "src/components/RightRail.jsx",
+      "source_location": "L1",
+      "id": "src_components_rightrail_jsx",
+      "community": 0,
+      "norm_label": "rightrail.jsx"
+    },
+    {
+      "label": "RightRail()",
+      "file_type": "code",
+      "source_file": "src/components/RightRail.jsx",
+      "source_location": "L3",
+      "id": "components_rightrail_rightrail",
+      "community": 0,
+      "norm_label": "rightrail()"
+    },
+    {
+      "label": "SmartWritingEditor.jsx",
+      "file_type": "code",
+      "source_file": "src/components/SmartWritingEditor.jsx",
+      "source_location": "L1",
+      "id": "src_components_smartwritingeditor_jsx",
+      "community": 1,
+      "norm_label": "smartwritingeditor.jsx"
+    },
+    {
+      "label": "SmartWritingEditor()",
+      "file_type": "code",
+      "source_file": "src/components/SmartWritingEditor.jsx",
+      "source_location": "L11",
+      "id": "components_smartwritingeditor_smartwritingeditor",
+      "community": 1,
+      "norm_label": "smartwritingeditor()"
+    },
+    {
+      "label": "buildSuggestionId()",
+      "file_type": "code",
+      "source_file": "src/components/SmartWritingEditor.jsx",
+      "source_location": "L349",
+      "id": "components_smartwritingeditor_buildsuggestionid",
+      "community": 1,
+      "norm_label": "buildsuggestionid()"
+    },
+    {
+      "label": "renderHighlightedHtml()",
+      "file_type": "code",
+      "source_file": "src/components/SmartWritingEditor.jsx",
+      "source_location": "L358",
+      "id": "components_smartwritingeditor_renderhighlightedhtml",
+      "community": 1,
+      "norm_label": "renderhighlightedhtml()"
+    },
+    {
+      "label": "escapeHtml()",
+      "file_type": "code",
+      "source_file": "src/components/SmartWritingEditor.jsx",
+      "source_location": "L403",
+      "id": "components_smartwritingeditor_escapehtml",
+      "community": 1,
+      "norm_label": "escapehtml()"
+    },
+    {
+      "label": "getPlainText()",
+      "file_type": "code",
+      "source_file": "src/components/SmartWritingEditor.jsx",
+      "source_location": "L410",
+      "id": "components_smartwritingeditor_getplaintext",
+      "community": 1,
+      "norm_label": "getplaintext()"
+    },
+    {
+      "label": "getSelectionOffsets()",
+      "file_type": "code",
+      "source_file": "src/components/SmartWritingEditor.jsx",
+      "source_location": "L417",
+      "id": "components_smartwritingeditor_getselectionoffsets",
+      "community": 1,
+      "norm_label": "getselectionoffsets()"
+    },
+    {
+      "label": "restoreSelection()",
+      "file_type": "code",
+      "source_file": "src/components/SmartWritingEditor.jsx",
+      "source_location": "L442",
+      "id": "components_smartwritingeditor_restoreselection",
+      "community": 1,
+      "norm_label": "restoreselection()"
+    },
+    {
+      "label": "locatePosition()",
+      "file_type": "code",
+      "source_file": "src/components/SmartWritingEditor.jsx",
+      "source_location": "L459",
+      "id": "components_smartwritingeditor_locateposition",
+      "community": 1,
+      "norm_label": "locateposition()"
+    },
+    {
+      "label": "applySuggestionToText()",
+      "file_type": "code",
+      "source_file": "src/components/SmartWritingEditor.jsx",
+      "source_location": "L482",
+      "id": "components_smartwritingeditor_applysuggestiontotext",
+      "community": 1,
+      "norm_label": "applysuggestiontotext()"
+    },
+    {
+      "label": "examData.js",
+      "file_type": "code",
+      "source_file": "src/data/examData.js",
+      "source_location": "L1",
+      "id": "src_data_examdata_js",
+      "community": 3,
+      "norm_label": "examdata.js"
+    },
+    {
+      "label": "flattenQuestions()",
+      "file_type": "code",
+      "source_file": "src/data/examData.js",
+      "source_location": "L641",
+      "id": "data_examdata_flattenquestions",
+      "community": 3,
+      "norm_label": "flattenquestions()"
+    },
+    {
+      "label": "grading.js",
+      "file_type": "code",
+      "source_file": "src/utils/grading.js",
+      "source_location": "L1",
+      "id": "src_utils_grading_js",
+      "community": 0,
+      "norm_label": "grading.js"
+    },
+    {
+      "label": "normalize()",
+      "file_type": "code",
+      "source_file": "src/utils/grading.js",
+      "source_location": "L1",
+      "id": "utils_grading_normalize",
+      "community": 0,
+      "norm_label": "normalize()"
+    },
+    {
+      "label": "gradeQuestion()",
+      "file_type": "code",
+      "source_file": "src/utils/grading.js",
+      "source_location": "L11",
+      "id": "utils_grading_gradequestion",
+      "community": 0,
+      "norm_label": "gradequestion()"
+    },
+    {
+      "label": "gradeExam()",
+      "file_type": "code",
+      "source_file": "src/utils/grading.js",
+      "source_location": "L53",
+      "id": "utils_grading_gradeexam",
+      "community": 3,
+      "norm_label": "gradeexam()"
+    },
+    {
+      "label": "sectionScores()",
+      "file_type": "code",
+      "source_file": "src/utils/grading.js",
+      "source_location": "L86",
+      "id": "utils_grading_sectionscores",
+      "community": 0,
+      "norm_label": "sectionscores()"
+    },
+    {
+      "label": "gradeLabel()",
+      "file_type": "code",
+      "source_file": "src/utils/grading.js",
+      "source_location": "L112",
+      "id": "utils_grading_gradelabel",
+      "community": 0,
+      "norm_label": "gradelabel()"
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/build_graphify_bootstrap.py",
+      "source_location": "L26",
+      "weight": 1.0,
+      "source": "scripts_build_graphify_bootstrap_py",
+      "target": "scripts_build_graphify_bootstrap_build_community_labels",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/build_graphify_bootstrap.py",
+      "source_location": "L39",
+      "weight": 1.0,
+      "source": "scripts_build_graphify_bootstrap_py",
+      "target": "scripts_build_graphify_bootstrap_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/build_graphify_bootstrap.py",
+      "source_location": "L56",
+      "weight": 1.0,
+      "source": "scripts_build_graphify_bootstrap_main",
+      "target": "scripts_build_graphify_bootstrap_build_community_labels",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "server_index_mjs",
+      "target": "data_examdata_flattenquestions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "server_index_mjs",
+      "target": "utils_grading_gradeexam",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L168",
+      "weight": 1.0,
+      "source": "server_index_mjs",
+      "target": "server_index_generateexamwithai",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L229",
+      "weight": 1.0,
+      "source": "server_index_mjs",
+      "target": "server_index_evaluateexamwithai",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L295",
+      "weight": 1.0,
+      "source": "server_index_mjs",
+      "target": "server_index_runwritingassistant",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L371",
+      "weight": 1.0,
+      "source": "server_index_mjs",
+      "target": "server_index_generatecorrectedcopywithai",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L431",
+      "weight": 1.0,
+      "source": "server_index_mjs",
+      "target": "server_index_buildfallbackexam",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L447",
+      "weight": 1.0,
+      "source": "server_index_mjs",
+      "target": "server_index_buildfallbackcorrectedcopy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L467",
+      "weight": 1.0,
+      "source": "server_index_mjs",
+      "target": "server_index_seedbankforprompt",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L480",
+      "weight": 1.0,
+      "source": "server_index_mjs",
+      "target": "server_index_sectiongenerationplan",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L499",
+      "weight": 1.0,
+      "source": "server_index_mjs",
+      "target": "server_index_sanitizegeneratedexam",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L533",
+      "weight": 1.0,
+      "source": "server_index_mjs",
+      "target": "server_index_sanitizeevaluation",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L574",
+      "weight": 1.0,
+      "source": "server_index_mjs",
+      "target": "server_index_slugify",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L583",
+      "weight": 1.0,
+      "source": "server_index_mjs",
+      "target": "server_index_shuffle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L592",
+      "weight": 1.0,
+      "source": "server_index_mjs",
+      "target": "server_index_defaultsectionminutes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L599",
+      "weight": 1.0,
+      "source": "server_index_mjs",
+      "target": "server_index_attachsuggestionpositions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L658",
+      "weight": 1.0,
+      "source": "server_index_mjs",
+      "target": "server_index_examschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L697",
+      "weight": 1.0,
+      "source": "server_index_mjs",
+      "target": "server_index_evaluationschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L796",
+      "weight": 1.0,
+      "source": "server_index_mjs",
+      "target": "server_index_mcqschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L828",
+      "weight": 1.0,
+      "source": "server_index_mjs",
+      "target": "server_index_writtenschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L857",
+      "weight": 1.0,
+      "source": "server_index_mjs",
+      "target": "server_index_codeschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L890",
+      "weight": 1.0,
+      "source": "server_index_mjs",
+      "target": "server_index_criteriaschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L918",
+      "weight": 1.0,
+      "source": "server_index_mjs",
+      "target": "server_index_correctedcopyschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L949",
+      "weight": 1.0,
+      "source": "server_index_mjs",
+      "target": "server_index_writingassistantschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L979",
+      "weight": 1.0,
+      "source": "server_index_mjs",
+      "target": "server_index_findnormalizedrange",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L198",
+      "weight": 1.0,
+      "source": "server_index_generateexamwithai",
+      "target": "server_index_sectiongenerationplan",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L199",
+      "weight": 1.0,
+      "source": "server_index_generateexamwithai",
+      "target": "server_index_seedbankforprompt",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L220",
+      "weight": 1.0,
+      "source": "server_index_generateexamwithai",
+      "target": "server_index_examschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L226",
+      "weight": 1.0,
+      "source": "server_index_generateexamwithai",
+      "target": "server_index_sanitizegeneratedexam",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L286",
+      "weight": 1.0,
+      "source": "server_index_evaluateexamwithai",
+      "target": "server_index_evaluationschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L292",
+      "weight": 1.0,
+      "source": "server_index_evaluateexamwithai",
+      "target": "server_index_sanitizeevaluation",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "server/index.mjs",
+      "source_location": "L239",
+      "weight": 1.0,
+      "source": "server_index_evaluateexamwithai",
+      "target": "data_examdata_flattenquestions"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L356",
+      "weight": 1.0,
+      "source": "server_index_runwritingassistant",
+      "target": "server_index_writingassistantschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L362",
+      "weight": 1.0,
+      "source": "server_index_runwritingassistant",
+      "target": "server_index_attachsuggestionpositions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L422",
+      "weight": 1.0,
+      "source": "server_index_generatecorrectedcopywithai",
+      "target": "server_index_correctedcopyschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "server/index.mjs",
+      "source_location": "L376",
+      "weight": 1.0,
+      "source": "server_index_generatecorrectedcopywithai",
+      "target": "data_examdata_flattenquestions"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "server/index.mjs",
+      "source_location": "L448",
+      "weight": 1.0,
+      "source": "server_index_buildfallbackcorrectedcopy",
+      "target": "data_examdata_flattenquestions"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L687",
+      "weight": 1.0,
+      "source": "server_index_examschema",
+      "target": "server_index_mcqschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L687",
+      "weight": 1.0,
+      "source": "server_index_examschema",
+      "target": "server_index_writtenschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L687",
+      "weight": 1.0,
+      "source": "server_index_examschema",
+      "target": "server_index_codeschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L851",
+      "weight": 1.0,
+      "source": "server_index_writtenschema",
+      "target": "server_index_criteriaschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/index.mjs",
+      "source_location": "L884",
+      "weight": 1.0,
+      "source": "server_index_codeschema",
+      "target": "server_index_criteriaschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.jsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_app_jsx",
+      "target": "data_examdata_flattenquestions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.jsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "src_app_jsx",
+      "target": "utils_grading_gradeexam",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.jsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "src_app_jsx",
+      "target": "src_app_app",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/App.jsx",
+      "source_location": "L26",
+      "weight": 1.0,
+      "source": "src_app_app",
+      "target": "data_examdata_flattenquestions"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/AppSidebar.jsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "src_components_appsidebar_jsx",
+      "target": "components_appsidebar_appsidebar",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ExamWorkspace.jsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "src_components_examworkspace_jsx",
+      "target": "components_examworkspace_examworkspace",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ExamWorkspace.jsx",
+      "source_location": "L89",
+      "weight": 1.0,
+      "source": "src_components_examworkspace_jsx",
+      "target": "components_examworkspace_formattime",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ExamWorkspace.jsx",
+      "source_location": "L30",
+      "weight": 1.0,
+      "source": "components_examworkspace_examworkspace",
+      "target": "components_examworkspace_formattime",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/Hero.jsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_components_hero_jsx",
+      "target": "components_hero_hero",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/HeroVisual.jsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_components_herovisual_jsx",
+      "target": "components_herovisual_herovisual",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/QuestionRenderer.jsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "src_components_questionrenderer_jsx",
+      "target": "components_questionrenderer_optionletter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/QuestionRenderer.jsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_components_questionrenderer_jsx",
+      "target": "components_questionrenderer_questionrenderer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ResultsView.jsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_components_resultsview_jsx",
+      "target": "utils_grading_gradelabel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ResultsView.jsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_components_resultsview_jsx",
+      "target": "utils_grading_sectionscores",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ResultsView.jsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "src_components_resultsview_jsx",
+      "target": "components_resultsview_resultsview",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ResultsView.jsx",
+      "source_location": "L307",
+      "weight": 1.0,
+      "source": "src_components_resultsview_jsx",
+      "target": "components_resultsview_formattime",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ResultsView.jsx",
+      "source_location": "L53",
+      "weight": 1.0,
+      "source": "components_resultsview_resultsview",
+      "target": "components_resultsview_formattime",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/components/ResultsView.jsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "components_resultsview_resultsview",
+      "target": "utils_grading_sectionscores"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/components/ResultsView.jsx",
+      "source_location": "L38",
+      "weight": 1.0,
+      "source": "components_resultsview_resultsview",
+      "target": "utils_grading_gradelabel"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/RightRail.jsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_components_rightrail_jsx",
+      "target": "utils_grading_gradelabel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/RightRail.jsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_components_rightrail_jsx",
+      "target": "utils_grading_sectionscores",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/RightRail.jsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "src_components_rightrail_jsx",
+      "target": "components_rightrail_rightrail",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/components/RightRail.jsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "components_rightrail_rightrail",
+      "target": "utils_grading_sectionscores"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/components/RightRail.jsx",
+      "source_location": "L88",
+      "weight": 1.0,
+      "source": "components_rightrail_rightrail",
+      "target": "utils_grading_gradelabel"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/SmartWritingEditor.jsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "src_components_smartwritingeditor_jsx",
+      "target": "components_smartwritingeditor_smartwritingeditor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/SmartWritingEditor.jsx",
+      "source_location": "L349",
+      "weight": 1.0,
+      "source": "src_components_smartwritingeditor_jsx",
+      "target": "components_smartwritingeditor_buildsuggestionid",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/SmartWritingEditor.jsx",
+      "source_location": "L358",
+      "weight": 1.0,
+      "source": "src_components_smartwritingeditor_jsx",
+      "target": "components_smartwritingeditor_renderhighlightedhtml",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/SmartWritingEditor.jsx",
+      "source_location": "L403",
+      "weight": 1.0,
+      "source": "src_components_smartwritingeditor_jsx",
+      "target": "components_smartwritingeditor_escapehtml",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/SmartWritingEditor.jsx",
+      "source_location": "L410",
+      "weight": 1.0,
+      "source": "src_components_smartwritingeditor_jsx",
+      "target": "components_smartwritingeditor_getplaintext",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/SmartWritingEditor.jsx",
+      "source_location": "L417",
+      "weight": 1.0,
+      "source": "src_components_smartwritingeditor_jsx",
+      "target": "components_smartwritingeditor_getselectionoffsets",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/SmartWritingEditor.jsx",
+      "source_location": "L442",
+      "weight": 1.0,
+      "source": "src_components_smartwritingeditor_jsx",
+      "target": "components_smartwritingeditor_restoreselection",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/SmartWritingEditor.jsx",
+      "source_location": "L459",
+      "weight": 1.0,
+      "source": "src_components_smartwritingeditor_jsx",
+      "target": "components_smartwritingeditor_locateposition",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/SmartWritingEditor.jsx",
+      "source_location": "L482",
+      "weight": 1.0,
+      "source": "src_components_smartwritingeditor_jsx",
+      "target": "components_smartwritingeditor_applysuggestiontotext",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/SmartWritingEditor.jsx",
+      "source_location": "L449",
+      "weight": 1.0,
+      "source": "components_smartwritingeditor_restoreselection",
+      "target": "components_smartwritingeditor_locateposition",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/data/examData.js",
+      "source_location": "L641",
+      "weight": 1.0,
+      "source": "src_data_examdata_js",
+      "target": "data_examdata_flattenquestions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/grading.js",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "src_utils_grading_js",
+      "target": "utils_grading_normalize",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/grading.js",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "src_utils_grading_js",
+      "target": "utils_grading_gradequestion",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/grading.js",
+      "source_location": "L53",
+      "weight": 1.0,
+      "source": "src_utils_grading_js",
+      "target": "utils_grading_gradeexam",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/grading.js",
+      "source_location": "L86",
+      "weight": 1.0,
+      "source": "src_utils_grading_js",
+      "target": "utils_grading_sectionscores",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/grading.js",
+      "source_location": "L112",
+      "weight": 1.0,
+      "source": "src_utils_grading_js",
+      "target": "utils_grading_gradelabel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/grading.js",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "utils_grading_gradequestion",
+      "target": "utils_grading_normalize",
+      "confidence_score": 1.0
+    }
+  ],
+  "hyperedges": [],
+  "built_at_commit": "a6c507644b3ce5f10debcebf1a493e73a4b3f588"
+}

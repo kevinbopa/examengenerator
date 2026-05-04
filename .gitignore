@@ -21,3 +21,4 @@ npm-debug.log*
 
 graphify-out/manifest.json
 graphify-out/cost.json
+graphify-out/cache/

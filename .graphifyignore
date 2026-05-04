@@ -4,4 +4,7 @@ dist/
 .codex/
 .graphify-local/
 .graphify-venv/
+processus (2)/
+script.js
+styles.css
 

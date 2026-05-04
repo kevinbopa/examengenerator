@@ -8,6 +8,7 @@
     "dev:client": "vite",
     "dev:server": "node --watch server/index.mjs",
     "build": "vite build",
+    "graphify:build": "powershell -ExecutionPolicy Bypass -File scripts/run-graphify-bootstrap.ps1",
     "preview": "vite preview"
   },
   "dependencies": {
