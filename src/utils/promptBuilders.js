@@ -12,21 +12,24 @@ export function buildExamGenerationPrompt({
     system: {
       role: "system",
       text:
-        `Tu es un professeur universitaire exigeant en processus logiciel. Ta mission est de generer un nouvel examen complet en francais pour le cours ${courseTitle || chapterId}. Tu dois utiliser tout le chapitre ou bloc de matiere fourni, t'inspirer fortement de la tournure et de la densite des questions de examens.md, te rapprocher le plus possible du style d'un vrai examen reel, et rester severe pour pousser l'etudiant a etre excellent. Les questions doivent etre pertinentes, nettes, academiques, parfois piegeuses mais toujours justes. Tu ne dois pas recopier mot pour mot les questions sources. Tu dois varier les angles, couvrir l'ensemble du chapitre, et estimer un temps d'examen volontairement serre mais realiste afin de stimuler une preparation serieuse. Quand une question beneficie clairement d'un schema, d'un croquis conceptuel ou d'une figure explicative, tu peux demander un support visuel. Ce support visuel doit rester pedagogique, sobre, et strictement aligne sur le cours.`
+        `Tu es un professeur universitaire exigeant en processus logiciel. Ta mission est de generer un nouvel examen complet en francais pour le cours ${courseTitle || chapterId}. Tu dois utiliser tout le chapitre ou bloc de matiere fourni, t'inspirer fortement de la tournure et de la densite des questions de examens.md, te rapprocher le plus possible du style d'un vrai examen reel, et rester severe pour pousser l'etudiant a etre excellent. Les questions doivent etre pertinentes, nettes, academiques, parfois piegeuses mais toujours justes. Tu ne dois pas recopier mot pour mot les questions sources. Tu dois varier les angles, couvrir l'ensemble du chapitre, et estimer un temps d'examen volontairement serre mais realiste afin de stimuler une preparation serieuse. Regle absolue : le fond des questions, les notions testees, les exemples conceptuels et les reponses attendues doivent venir des documents de cours fournis. Les anciens examens ne servent qu'a copier le style, la formulation, la difficulte et les formats de questions. Quand une question beneficie clairement d'un schema, d'un croquis conceptuel ou d'une figure explicative, tu peux demander un support visuel. Ce support visuel doit rester pedagogique, sobre, et strictement aligne sur le cours.`
     },
     userText: [
       `Cours cible: ${courseTitle || chapterId}`,
       `Chapitre ou bloc cible: ${chapterId}`,
       `Structure imposee: ${JSON.stringify(sectionPlan, null, 2)}`,
-      `Banque locale actuelle d'exemple: ${JSON.stringify(seedBank, null, 2)}`,
+      `Gabarit de structure a respecter (sans reutiliser son contenu): ${JSON.stringify(seedBank, null, 2)}`,
       `Index pedagogique du cours:\n${serializePedagogicalIndex(pedagogicalIndex)}`,
       `Synthese IA des fichiers du cours:\n${serializeAiSourceContext(aiSourceContext)}`,
-      `Exemples historiques d'enonces (examens.md):\n${examplesText}`,
-      `Contenu complet du cours du chapitre:\n${chapterText}`,
+      `Exemples historiques d'enonces pour le style seulement (anciens examens):\n${examplesText}`,
+      `Contenu complet du cours, source unique du fond des questions:\n${chapterText}`,
       "Contraintes obligatoires :",
       "- generer un examen nouveau a chaque fois",
       "- couvrir tout le chapitre et pas seulement les notions les plus evidentes",
-      "- contextualiser chaque question avec le vocabulaire, les tensions, les pratiques et les concepts reellement presents dans les sources importees",
+      "- prendre le contenu des questions uniquement dans les documents de cours importes",
+      "- utiliser les anciens examens uniquement pour la formulation, la longueur, la severite et les types de questions",
+      "- ne jamais importer comme contenu de fond une idee qui viendrait seulement d un ancien examen si elle n apparait pas dans le cours",
+      "- contextualiser chaque question avec le vocabulaire, les tensions, les pratiques et les concepts reellement presents dans les documents de cours",
       "- pour les questions de semi-developpement, developpement et code, exiger de la reflexion : comparaison, justification, analyse critique, transfert a une situation, nuance ou prise de decision",
       "- eviter les questions de simple definition si elles ne servent pas un raisonnement academique plus riche",
       "- si une figure est pedagogiquement utile, demander un figureRequest tres explicite, mais limiter cela aux cas vraiment pertinents",

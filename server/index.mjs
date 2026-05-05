@@ -361,13 +361,15 @@ if (shouldAutoStartServer()) {
 
 async function generateExamWithAI(course) {
   const { chapterText, examplesText, pedagogicalIndex } = await loadCoursePromptContext(course);
+  if (!String(chapterText || "").trim()) {
+    throw new Error("Aucun contenu de cours exploitable n est disponible pour generer un examen contextualise.");
+  }
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
   });
   const aiSourceContext = await buildAiSourceContext({
     openai,
     course,
-    chapterText,
     examplesText,
     pedagogicalIndex
   });
@@ -699,11 +701,21 @@ function seedBankForPrompt() {
     id: section.id,
     title: section.title,
     instructions: section.instructions,
-    sampleQuestions: section.questions.slice(0, 2).map((question) => ({
-      type: question.type,
-      topic: question.topic,
-      prompt: question.prompt
-    }))
+    questionType:
+      section.id === "qcm"
+        ? "mcq"
+        : section.id === "code"
+          ? "code"
+          : "written",
+    responseStyle:
+      section.id === "semi"
+        ? "semi"
+        : section.id === "dev"
+          ? "essay"
+          : section.id === "code"
+            ? "code"
+            : "mcq",
+    questionCount: section.questions.length
   }));
 }
 
@@ -797,10 +809,15 @@ async function loadCoursePromptContext(course) {
     (course.pastExams || []).map((pastExam) => readSourcePromptText(pastExam))
   );
 
+  const hasUploadedCourseDocuments = Array.isArray(course?.sources) && course.sources.length > 0;
+  const mergedChapterText = chapterFragments.filter(Boolean).join("\n\n");
+
   return {
     chapterText:
-      chapterFragments.filter(Boolean).join("\n\n") ||
-      (await fs.readFile(resolveProjectFile("H26_GLO2003_09_Agilite_XP.md"), "utf8")),
+      mergedChapterText ||
+      (hasUploadedCourseDocuments
+        ? ""
+        : await fs.readFile(resolveProjectFile("H26_GLO2003_09_Agilite_XP.md"), "utf8")),
     examplesText: exampleFragments.join("\n\n"),
     pedagogicalIndex: course.pedagogicalIndex || null
   };

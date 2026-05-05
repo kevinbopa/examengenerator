@@ -4,13 +4,13 @@ import path from "node:path";
 export async function buildAiSourceContext({
   openai,
   course,
-  chapterText,
   examplesText,
   pedagogicalIndex
 }) {
-  const compactSources = buildCompactSourceCorpus(course);
+  const compactCourseDocuments = buildCompactCourseDocumentCorpus(course);
+  const compactExamStyles = buildCompactExamStyleCorpus(course);
 
-  if (!compactSources) {
+  if (!compactCourseDocuments) {
     return null;
   }
 
@@ -35,9 +35,10 @@ export async function buildAiSourceContext({
             text: [
               `Cours: ${course.title} (${course.courseCode})`,
               `Index pedagogique disponible:\n${JSON.stringify(pedagogicalIndex || {}, null, 2)}`,
-              `Exemples historiques d'examens:\n${trimLargeText(examplesText, 7000)}`,
-              `Extraits utiles des fichiers du cours:\n${compactSources}`,
-              "Produis une synthese qui aidera ensuite a generer des questions beaucoup plus pertinentes et reflexives."
+              `Extraits utiles des documents de cours (source de verite du contenu):\n${compactCourseDocuments}`,
+              `Exemples historiques d'examens (style et formulation seulement):\n${trimLargeText(compactExamStyles || examplesText, 7000)}`,
+              "Produis une synthese qui aidera ensuite a generer des questions beaucoup plus pertinentes et reflexives.",
+              "Important : le contenu des futures questions doit venir des documents de cours. Les anciens examens servent uniquement a capturer le style, la formulation, le niveau d'exigence et les types de questions."
             ].join("\n\n")
           }
         ]
@@ -110,8 +111,8 @@ export async function attachGeneratedQuestionFigures({
   };
 }
 
-function buildCompactSourceCorpus(course) {
-  const items = [...(course.sources || []), ...(course.pastExams || [])]
+function buildCompactCourseDocumentCorpus(course) {
+  const items = (course.sources || [])
     .filter((source) => source.status === "ready" && source.segments?.length)
     .slice(0, 8)
     .map((source) => {
@@ -125,6 +126,26 @@ function buildCompactSourceCorpus(course) {
         `Type: ${source.kind}`,
         `Format: ${source.format}`,
         `Segments utiles:\n${segmentPreview}`
+      ].join("\n");
+    });
+
+  return items.join("\n\n---\n\n");
+}
+
+function buildCompactExamStyleCorpus(course) {
+  const items = (course.pastExams || [])
+    .filter((source) => source.status === "ready" && source.segments?.length)
+    .slice(0, 6)
+    .map((source) => {
+      const segmentPreview = source.segments
+        .slice(0, 4)
+        .map((segment) => trimLargeText(segment, 420))
+        .join("\n\n");
+
+      return [
+        `Ancien examen: ${source.title}`,
+        `Session: ${source.session || "n/a"} ${source.year || ""}`.trim(),
+        `Extraits de formulation:\n${segmentPreview}`
       ].join("\n");
     });
 

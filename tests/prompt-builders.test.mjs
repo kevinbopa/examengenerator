@@ -48,7 +48,11 @@ test("buildExamGenerationPrompt formalizes the severe academic generation rules"
   assert.match(prompt.userText, /Index pedagogique du cours/i);
   assert.match(prompt.userText, /Synthese IA des fichiers du cours/i);
   assert.match(prompt.userText, /iteratif/i);
+  assert.match(prompt.system.text, /Les anciens examens ne servent qu'a copier le style/i);
   assert.match(prompt.userText, /generer un examen nouveau a chaque fois/i);
+  assert.match(prompt.userText, /prendre le contenu des questions uniquement dans les documents de cours importes/i);
+  assert.match(prompt.userText, /utiliser les anciens examens uniquement pour la formulation/i);
+  assert.match(prompt.userText, /ne jamais importer comme contenu de fond une idee qui viendrait seulement d un ancien examen/i);
   assert.match(prompt.userText, /contextualiser chaque question/i);
   assert.match(prompt.userText, /exiger de la reflexion/i);
   assert.match(prompt.userText, /figureRequest/i);
