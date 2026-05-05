@@ -11,6 +11,7 @@ import {
   createLocalCourse,
   getActiveCourse,
   ingestCourse,
+  indexCoursePedagogically,
   loadCourseCatalog
 } from "./courseStore.mjs";
 import { normalizeCorrectedCopyPayload } from "../src/utils/correctedCopy.js";
@@ -120,6 +121,21 @@ app.post("/api/courses/:courseId/ingest", async (request, response) => {
   } catch (error) {
     response.status(400).json({
       error: error.message || "Ingestion impossible."
+    });
+  }
+});
+
+app.post("/api/courses/:courseId/pedagogical-index", async (request, response) => {
+  try {
+    const result = await indexCoursePedagogically(projectRoot, request.params.courseId);
+    response.json({
+      course: result.course,
+      pedagogicalIndex: result.pedagogicalIndex,
+      activeCourseId: result.catalog.activeCourseId
+    });
+  } catch (error) {
+    response.status(400).json({
+      error: error.message || "Index pedagogique impossible."
     });
   }
 });
@@ -281,7 +297,7 @@ if (shouldAutoStartServer()) {
 }
 
 async function generateExamWithAI(course) {
-  const { chapterText, examplesText } = await loadCoursePromptContext(course);
+  const { chapterText, examplesText, pedagogicalIndex } = await loadCoursePromptContext(course);
 
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
@@ -291,7 +307,8 @@ async function generateExamWithAI(course) {
     sectionPlan: sectionGenerationPlan(),
     seedBank: seedBankForPrompt(),
     chapterText,
-    examplesText
+    examplesText,
+    pedagogicalIndex
   });
 
   const response = await openai.responses.create({
@@ -332,7 +349,7 @@ async function generateExamWithAI(course) {
 
 async function evaluateExamWithAI(exam, answersById) {
   const course = await resolveCourseForExam(exam);
-  const { chapterText, examplesText } = await loadCoursePromptContext(course);
+  const { chapterText, examplesText, pedagogicalIndex } = await loadCoursePromptContext(course);
 
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
@@ -347,7 +364,8 @@ async function evaluateExamWithAI(exam, answersById) {
     exam,
     flatQuestions,
     chapterText,
-    examplesText
+    examplesText,
+    pedagogicalIndex
   });
 
   const response = await openai.responses.create({
@@ -618,7 +636,8 @@ async function loadCoursePromptContext(course) {
     chapterText:
       chapterFragments.filter(Boolean).join("\n\n") ||
       (await fs.readFile(resolveProjectFile("H26_GLO2003_09_Agilite_XP.md"), "utf8")),
-    examplesText: exampleFragments.join("\n\n")
+    examplesText: exampleFragments.join("\n\n"),
+    pedagogicalIndex: course.pedagogicalIndex || null
   };
 }
 

@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { extractTextFromBuffer, summarizeCourseIngestion } from "./courseIngestion.mjs";
+import { buildPedagogicalIndex } from "./coursePedagogicalIndex.mjs";
 import {
   createCourse,
   createCourseCatalog,
@@ -211,6 +212,35 @@ export async function ingestCourse(projectRoot, courseId) {
   return {
     course: provisionalCourse,
     summary: provisionalCourse.ingestionSummary,
+    catalog: nextCatalog
+  };
+}
+
+export async function indexCoursePedagogically(projectRoot, courseId) {
+  const catalog = await loadCourseCatalog(projectRoot);
+  const targetCourse = catalog.courses.find((course) => course.id === courseId);
+
+  if (!targetCourse) {
+    throw new Error("Course introuvable.");
+  }
+
+  const pedagogicalIndex = buildPedagogicalIndex(targetCourse);
+  const updatedCourse = createCourse({
+    ...targetCourse,
+    pedagogicalIndex,
+    updatedAt: new Date().toISOString()
+  });
+
+  const nextCatalog = createCourseCatalog({
+    courses: catalog.courses.map((course) => (course.id === courseId ? updatedCourse : course)),
+    activeCourseId: catalog.activeCourseId
+  });
+
+  await saveCourseCatalog(projectRoot, nextCatalog);
+
+  return {
+    course: updatedCourse,
+    pedagogicalIndex,
     catalog: nextCatalog
   };
 }

@@ -3,7 +3,8 @@ export function buildExamGenerationPrompt({
   sectionPlan,
   seedBank,
   chapterText,
-  examplesText
+  examplesText,
+  pedagogicalIndex
 }) {
   return {
     system: {
@@ -15,6 +16,7 @@ export function buildExamGenerationPrompt({
       `Chapitre cible: ${chapterId}`,
       `Structure imposee: ${JSON.stringify(sectionPlan, null, 2)}`,
       `Banque locale actuelle d'exemple: ${JSON.stringify(seedBank, null, 2)}`,
+      `Index pedagogique du cours:\n${serializePedagogicalIndex(pedagogicalIndex)}`,
       `Exemples historiques d'enonces (examens.md):\n${examplesText}`,
       `Contenu complet du cours du chapitre:\n${chapterText}`,
       "Contraintes obligatoires :",
@@ -33,7 +35,8 @@ export function buildExamEvaluationPrompt({
   exam,
   flatQuestions,
   chapterText,
-  examplesText
+  examplesText,
+  pedagogicalIndex
 }) {
   return {
     system: {
@@ -43,6 +46,7 @@ export function buildExamEvaluationPrompt({
     },
     userText: [
       "Contexte de correction :",
+      `Index pedagogique du cours:\n${serializePedagogicalIndex(pedagogicalIndex)}`,
       `Exemples de style reel d'examen (examens.md):\n${examplesText}`,
       `Contenu complet du chapitre a utiliser comme reference officielle:\n${chapterText}`,
       `Sujet de l'examen a corriger:\n${JSON.stringify(exam, null, 2)}`,
@@ -112,4 +116,22 @@ export function buildCorrectedCopyPrompt({ flatQuestions }) {
       "- donne aussi une courte note sur le type d'amelioration de langue effectue"
     ].join("\n\n")
   };
+}
+
+function serializePedagogicalIndex(index) {
+  if (!index || typeof index !== "object") {
+    return "Aucun index pedagogique disponible.";
+  }
+
+  return JSON.stringify(
+    {
+      status: index.status || "draft",
+      concepts: (index.concepts || []).slice(0, 8),
+      themes: (index.themes || []).slice(0, 5),
+      styleSignals: (index.styleSignals || []).slice(0, 5),
+      warnings: index.warnings || []
+    },
+    null,
+    2
+  );
 }

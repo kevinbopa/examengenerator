@@ -1,6 +1,7 @@
 const VALID_SOURCE_KINDS = new Set(["courseDocument", "pastExam"]);
 const VALID_INGESTION_STATUSES = new Set(["draft", "ready", "processing", "failed"]);
 const VALID_SOURCE_STATUSES = new Set(["uploaded", "ready", "missing", "failed"]);
+const VALID_INDEX_STATUSES = new Set(["draft", "ready", "partial", "failed"]);
 const SUPPORTED_COURSE_DOCUMENT_FORMATS = new Set(["pdf", "md", "txt", "docx"]);
 const SUPPORTED_PAST_EXAM_FORMATS = new Set(["pdf", "md", "txt", "docx"]);
 
@@ -23,6 +24,7 @@ export function createCourse(input) {
       "draft"
     ),
     ingestionSummary: normalizeIngestionSummary(input?.ingestionSummary),
+    pedagogicalIndex: normalizePedagogicalIndex(input?.pedagogicalIndex),
     createdAt,
     updatedAt
   };
@@ -132,6 +134,64 @@ function normalizeIngestionSummary(summary) {
     failedItems: Number(summary.failedItems) || 0,
     warningCount: Number(summary.warningCount) || 0,
     totalSegments: Number(summary.totalSegments) || 0
+  };
+}
+
+function normalizePedagogicalIndex(index) {
+  if (!index || typeof index !== "object") {
+    return emptyPedagogicalIndex();
+  }
+
+  return {
+    status: normalizeEnum(index.status, VALID_INDEX_STATUSES, "draft"),
+    generatedAt: optionalString(index.generatedAt),
+    coverage: {
+      readySourceCount: Number(index.coverage?.readySourceCount) || 0,
+      totalSourceCount: Number(index.coverage?.totalSourceCount) || 0,
+      totalSegmentCount: Number(index.coverage?.totalSegmentCount) || 0
+    },
+    concepts: Array.isArray(index.concepts)
+      ? index.concepts.map((concept) => ({
+          label: optionalString(concept.label),
+          occurrenceCount: Number(concept.occurrenceCount) || 0,
+          sourceIds: Array.isArray(concept.sourceIds) ? concept.sourceIds.filter(Boolean) : [],
+          sampleContext: optionalString(concept.sampleContext)
+        })).filter((concept) => concept.label)
+      : [],
+    themes: Array.isArray(index.themes)
+      ? index.themes.map((theme) => ({
+          label: optionalString(theme.label),
+          sourceIds: Array.isArray(theme.sourceIds) ? theme.sourceIds.filter(Boolean) : [],
+          segmentCount: Number(theme.segmentCount) || 0,
+          summary: optionalString(theme.summary),
+          keyConceptLabels: Array.isArray(theme.keyConceptLabels) ? theme.keyConceptLabels.filter(Boolean) : []
+        })).filter((theme) => theme.label)
+      : [],
+    styleSignals: Array.isArray(index.styleSignals)
+      ? index.styleSignals.map((signal) => ({
+          label: optionalString(signal.label),
+          description: optionalString(signal.description),
+          evidenceCount: Number(signal.evidenceCount) || 0,
+          sourceIds: Array.isArray(signal.sourceIds) ? signal.sourceIds.filter(Boolean) : []
+        })).filter((signal) => signal.label)
+      : [],
+    warnings: Array.isArray(index.warnings) ? index.warnings.filter(Boolean) : []
+  };
+}
+
+function emptyPedagogicalIndex() {
+  return {
+    status: "draft",
+    generatedAt: "",
+    coverage: {
+      readySourceCount: 0,
+      totalSourceCount: 0,
+      totalSegmentCount: 0
+    },
+    concepts: [],
+    themes: [],
+    styleSignals: [],
+    warnings: []
   };
 }
 

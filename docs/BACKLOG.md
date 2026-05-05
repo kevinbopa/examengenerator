@@ -27,8 +27,8 @@
 
 - [x] Extraire et nettoyer le texte des documents televerses
 - [x] Extraire et nettoyer le texte des anciens examens televerses
-- [ ] Construire un index exploitable par cours
-- [ ] Identifier les concepts, themes et signaux de style d'examen
+- [x] Construire un index exploitable par cours
+- [x] Identifier les concepts, themes et signaux de style d'examen
 - [x] Garantir une strategie de fallback si l'ingestion echoue
 
 ## Epic 4 - Generation d'examens IA par cours
@@ -83,5 +83,6 @@
 - [x] Ajouter l'upload des documents de cours
 - [x] Ajouter l'upload des anciens examens
 - [x] Construire le pipeline d'ingestion MVP
+- [x] Construire l'index pedagogique du cours
 - [ ] Generer un examen a partir des sources televersees
 - [x] Formaliser le suivi des bugs avec une issue dediee a chaque bug detecte

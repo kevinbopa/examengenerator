@@ -4,3 +4,4 @@ import "./corrected-copy-utils.test.mjs";
 import "./prompt-builders.test.mjs";
 import "./course-model.test.mjs";
 import "./course-ingestion.test.mjs";
+import "./course-pedagogical-index.test.mjs";

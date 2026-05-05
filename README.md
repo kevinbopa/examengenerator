@@ -23,6 +23,7 @@ Le projet contient deja :
 - un upload local de documents de cours pour le cours actif;
 - un upload local d'anciens examens avec metadonnees minimales;
 - un pipeline d'ingestion MVP avec nettoyage, segmentation et resume par cours;
+- un index pedagogique de cours avec concepts, themes et signaux de style;
 - une interface de simulation d'examen;
 - un assistant de correction linguistique;
 - une base de questions locales et une generation dynamique d'examens;
@@ -97,6 +98,16 @@ Cette etape :
 - le segmente en blocs exploitables;
 - produit un resume global du cours;
 - prepare la future generation d'un examen d'exemple a partir des textes ingeres.
+
+## Index pedagogique
+
+Le MVP permet maintenant de construire un index pedagogique a partir des sources ingerees.
+
+Cet index :
+- extrait des concepts lies aux sources;
+- resume des themes dominants du cours;
+- detecte des signaux de style a partir des anciens examens;
+- alimente les prompts de generation et de correction.
 
 ## Tests
 

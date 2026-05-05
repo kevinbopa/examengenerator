@@ -45,6 +45,10 @@ test("createCourse normalizes a reusable generic course model", () => {
   assert.equal(course.pastExams[0].kind, "pastExam");
   assert.equal(course.pastExams[0].session, "Hiver");
   assert.equal(course.pastExams[0].year, 2026);
+  assert.equal(course.pedagogicalIndex.status, "draft");
+  assert.deepEqual(course.pedagogicalIndex.concepts, []);
+  assert.deepEqual(course.pedagogicalIndex.themes, []);
+  assert.deepEqual(course.pedagogicalIndex.styleSignals, []);
 });
 
 test("createCourseCatalog keeps an explicit active course when it exists", () => {

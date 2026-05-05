@@ -282,6 +282,51 @@ test(
   }
 );
 
+test(
+  "POST /api/courses/:courseId/pedagogical-index builds a course index tied to ingested sources",
+  { concurrency: false },
+  async () => {
+    const createResponse = await postJson("/api/courses", {
+      title: "Architecture logicielle",
+      courseCode: "GLO4001",
+      description: "Cours de conception et d'architecture"
+    });
+    const created = await createResponse.json();
+
+    await postJson(`/api/courses/${created.course.id}/documents`, {
+      fileName: "notes-cours.md",
+      mimeType: "text/markdown",
+      contentBase64: Buffer.from(
+        "# Styles architecturaux\nLes styles architecturaux structurent la solution.\n\n# Decisions\nLes decisions d architecture doivent etre justifiees.",
+        "utf8"
+      ).toString("base64")
+    });
+
+    await postJson(`/api/courses/${created.course.id}/past-exams`, {
+      fileName: "intra-h2025.txt",
+      mimeType: "text/plain",
+      contentBase64: Buffer.from(
+        "Expliquez un style architectural. Justifiez vos choix. Comparez deux approches.",
+        "utf8"
+      ).toString("base64"),
+      session: "Hiver",
+      year: 2025,
+      sourceName: "Intra Hiver 2025"
+    });
+
+    await postJson(`/api/courses/${created.course.id}/ingest`, {});
+    const indexResponse = await postJson(`/api/courses/${created.course.id}/pedagogical-index`, {});
+    assert.equal(indexResponse.status, 200);
+
+    const payload = await indexResponse.json();
+    assert.equal(payload.course.pedagogicalIndex.status, "ready");
+    assert.ok(payload.course.pedagogicalIndex.concepts.length >= 1);
+    assert.ok(payload.course.pedagogicalIndex.themes.length >= 1);
+    assert.ok(payload.course.pedagogicalIndex.styleSignals.length >= 1);
+    assert.ok(payload.course.pedagogicalIndex.concepts[0].sourceIds.length >= 1);
+  }
+);
+
 test("POST /api/generate-exam returns the fallback exam when AI is disabled", { concurrency: false }, async () => {
   const response = await postJson("/api/generate-exam", {
     chapterId: examBlueprint.chapter

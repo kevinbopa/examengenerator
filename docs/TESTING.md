@@ -26,6 +26,7 @@ Les tests backend couvrent d'abord les comportements de secours et de validation
 - `POST /api/courses/:courseId/documents`
 - `POST /api/courses/:courseId/past-exams`
 - `POST /api/courses/:courseId/ingest`
+- `POST /api/courses/:courseId/pedagogical-index`
 - `POST /api/generate-exam`
 - `POST /api/evaluate-exam`
 - `POST /api/generate-corrected-copy`
@@ -73,6 +74,13 @@ La suite couvre aussi le pipeline d'ingestion MVP :
 - resume d'ingestion par cours;
 - ingestion backend des documents et anciens examens;
 - rejet explicite d'un cours vide sans source a ingerer.
+
+La suite couvre aussi l'index pedagogique du cours :
+- extraction de concepts lies aux sources;
+- regroupement thematique du cours;
+- detection de signaux de style d examen;
+- persistance backend de l index sur le cours;
+- cas de cours incomplet avec warnings.
 
 ## Pourquoi le mode fallback en premier
 

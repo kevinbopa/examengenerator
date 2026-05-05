@@ -149,6 +149,10 @@ Critere d'acceptation :
 - les concepts identifies restent lies aux sources;
 - la logique est testee.
 
+Statut :
+- terminee
+- livree avec endpoint `POST /api/courses/:courseId/pedagogical-index`, extraction heuristique de concepts, themes et signaux de style, persistance sur le cours actif, exposition au moteur de prompt et carte UI dediee
+
 ### Issue 11 - Generer un examen a partir des sources televersees
 
 En tant qu'etudiant,
@@ -190,8 +194,7 @@ Statut :
 
 ## Ordre recommande
 
-1. Issue 10 - Index pedagogique
-2. Issue 11 - Generation a partir des sources
+1. Issue 11 - Generation a partir des sources
 
 ## Definition of Done du sprint
 

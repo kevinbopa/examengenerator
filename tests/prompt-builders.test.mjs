@@ -15,7 +15,13 @@ test("buildExamGenerationPrompt formalizes the severe academic generation rules"
     sectionPlan: [{ id: "qcm", questionCount: 6 }],
     seedBank: [{ id: "qcm", title: "QCM" }],
     chapterText: "Contenu du chapitre",
-    examplesText: "Questions historiques"
+    examplesText: "Questions historiques",
+    pedagogicalIndex: {
+      status: "ready",
+      concepts: [{ label: "iteratif", occurrenceCount: 4, sourceIds: ["cours-1"] }],
+      themes: [{ label: "Recits utilisateur", keyConceptLabels: ["iteratif"] }],
+      styleSignals: [{ label: "justification academique", evidenceCount: 2 }]
+    }
   });
 
   assert.equal(prompt.system.role, "system");
@@ -24,6 +30,8 @@ test("buildExamGenerationPrompt formalizes the severe academic generation rules"
   assert.match(prompt.system.text, /severe pour pousser l'etudiant a etre excellent/i);
   assert.match(prompt.userText, /Chapitre cible/i);
   assert.match(prompt.userText, /Structure imposee/i);
+  assert.match(prompt.userText, /Index pedagogique du cours/i);
+  assert.match(prompt.userText, /iteratif/i);
   assert.match(prompt.userText, /generer un examen nouveau a chaque fois/i);
   assert.match(prompt.userText, /criteres de correction exploitables et fins/i);
 });
@@ -33,12 +41,20 @@ test("buildExamEvaluationPrompt separates content and language while remaining s
     exam: { title: "Examen" },
     flatQuestions: [{ id: "semi-1", prompt: "Question", userAnswer: "Reponse" }],
     chapterText: "Cours",
-    examplesText: "Exemples"
+    examplesText: "Exemples",
+    pedagogicalIndex: {
+      status: "ready",
+      concepts: [{ label: "tests", occurrenceCount: 3, sourceIds: ["cours-1"] }],
+      themes: [{ label: "Feedback rapide", keyConceptLabels: ["tests"] }],
+      styleSignals: [{ label: "analyse critique", evidenceCount: 2 }]
+    }
   });
 
   assert.match(prompt.system.text, /severe mais juste/i);
   assert.match(prompt.system.text, /distingues toujours le contenu et la langue/i);
   assert.match(prompt.system.text, /type Word/i);
+  assert.match(prompt.userText, /Index pedagogique du cours/i);
+  assert.match(prompt.userText, /Feedback rapide/i);
   assert.match(prompt.userText, /Regles de notation/i);
   assert.match(prompt.userText, /separe clairement feedback de contenu et suggestions de langue/i);
 });
