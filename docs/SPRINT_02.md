@@ -114,6 +114,7 @@ Sorties attendues :
 - texte nettoye;
 - segments exploitables;
 - erreurs et warnings d'ingestion.
+- une base suffisante pour pouvoir produire un premier examen d'exemple du cours.
 
 Critere d'acceptation :
 - les documents de cours peuvent etre convertis en texte exploitable;
@@ -156,6 +157,7 @@ Critere d'acceptation :
 - la generation n'utilise plus seulement les fichiers hardcodes du repo;
 - l'examen produit fait reference au cours actif;
 - les anciens examens influencent la tournure des questions;
+- un examen d'exemple du cours peut etre cree des que les sources minimales sont disponibles;
 - la logique est testee.
 
 ### Issue 12 - Suivi systematique des bugs

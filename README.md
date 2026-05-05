@@ -7,6 +7,7 @@ Plateforme de revision universitaire orientee examen. L'objectif produit est de 
 L'application doit permettre a un etudiant de :
 - televerser les documents de son cours;
 - televerser les anciens examens lies a ce cours;
+- obtenir un examen d'exemple du cours cree a partir des sources importees;
 - generer un examen realiste a partir du cours et d'anciens examens;
 - passer une simulation chronometree;
 - recevoir une correction detaillee et severe fondee sur le contenu du cours;

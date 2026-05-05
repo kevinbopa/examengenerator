@@ -9,6 +9,7 @@ Le produit doit permettre a un utilisateur de :
 - televerser les documents de ce cours;
 - televerser les anciens examens associes;
 - laisser le systeme ingerer ces sources;
+- obtenir rapidement un premier examen d'exemple cree a partir de ce cours;
 - generer un nouvel examen credible a partir de ces entrees;
 - passer l'examen;
 - recevoir une correction utile et une copie corrigee.
@@ -101,6 +102,7 @@ Les fichiers importes doivent devenir une matiere exploitable par l'application.
 ### Resultat attendu
 
 Chaque source importee produit un texte propre, exploitable et trace.
+Le systeme doit alors etre capable d'alimenter la generation d'un premier examen d'exemple.
 
 ### Portee technique
 
@@ -146,6 +148,7 @@ Le systeme doit cesser de dependre principalement des fichiers statiques du repo
 ### Resultat attendu
 
 La generation d'examen se fait a partir du cours actif et de ses anciens examens.
+Cette issue doit absolument permettre de produire un examen d'exemple du cours cree par l'utilisateur.
 
 ### Portee technique
 
