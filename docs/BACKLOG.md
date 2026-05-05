@@ -34,7 +34,7 @@
 ## Epic 4 - Generation d'examens IA par cours
 
 - [x] Formaliser le prompt de generation avec contraintes pedagogiques
-- [ ] Generer un examen a partir des sources du cours
+- [x] Generer un examen a partir des sources du cours
 - [ ] Garantir la variete des questions entre deux sessions
 - [ ] Associer chaque question a des concepts du cours
 - [ ] Estimer automatiquement un temps d'examen credible
@@ -84,5 +84,5 @@
 - [x] Ajouter l'upload des anciens examens
 - [x] Construire le pipeline d'ingestion MVP
 - [x] Construire l'index pedagogique du cours
-- [ ] Generer un examen a partir des sources televersees
+- [x] Generer un examen a partir des sources televersees
 - [x] Formaliser le suivi des bugs avec une issue dediee a chaque bug detecte

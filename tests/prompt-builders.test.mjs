@@ -11,6 +11,7 @@ import {
 
 test("buildExamGenerationPrompt formalizes the severe academic generation rules", () => {
   const prompt = buildExamGenerationPrompt({
+    courseTitle: "Architecture logicielle",
     chapterId: examBlueprint.chapter,
     sectionPlan: [{ id: "qcm", questionCount: 6 }],
     seedBank: [{ id: "qcm", title: "QCM" }],
@@ -26,9 +27,10 @@ test("buildExamGenerationPrompt formalizes the severe academic generation rules"
 
   assert.equal(prompt.system.role, "system");
   assert.match(prompt.system.text, /professeur universitaire exigeant/i);
+  assert.match(prompt.system.text, /Architecture logicielle/i);
   assert.match(prompt.system.text, /vrai examen reel/i);
   assert.match(prompt.system.text, /severe pour pousser l'etudiant a etre excellent/i);
-  assert.match(prompt.userText, /Chapitre cible/i);
+  assert.match(prompt.userText, /Cours cible/i);
   assert.match(prompt.userText, /Structure imposee/i);
   assert.match(prompt.userText, /Index pedagogique du cours/i);
   assert.match(prompt.userText, /iteratif/i);
@@ -38,6 +40,7 @@ test("buildExamGenerationPrompt formalizes the severe academic generation rules"
 
 test("buildExamEvaluationPrompt separates content and language while remaining severe", () => {
   const prompt = buildExamEvaluationPrompt({
+    courseTitle: "Architecture logicielle",
     exam: { title: "Examen" },
     flatQuestions: [{ id: "semi-1", prompt: "Question", userAnswer: "Reponse" }],
     chapterText: "Cours",
@@ -51,6 +54,7 @@ test("buildExamEvaluationPrompt separates content and language while remaining s
   });
 
   assert.match(prompt.system.text, /severe mais juste/i);
+  assert.match(prompt.system.text, /Architecture logicielle/i);
   assert.match(prompt.system.text, /distingues toujours le contenu et la langue/i);
   assert.match(prompt.system.text, /type Word/i);
   assert.match(prompt.userText, /Index pedagogique du cours/i);

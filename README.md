@@ -24,6 +24,7 @@ Le projet contient deja :
 - un upload local d'anciens examens avec metadonnees minimales;
 - un pipeline d'ingestion MVP avec nettoyage, segmentation et resume par cours;
 - un index pedagogique de cours avec concepts, themes et signaux de style;
+- une generation source-driven capable de produire un premier examen d'exemple a partir d'un cours televerse;
 - une interface de simulation d'examen;
 - un assistant de correction linguistique;
 - une base de questions locales et une generation dynamique d'examens;
@@ -32,7 +33,7 @@ Le projet contient deja :
 - des prompts IA centralises et testes.
 
 Limite actuelle :
-- l'index pedagogique et la generation full source-driven ne sont pas encore finalises, donc le flux principal reste encore partiellement dependant de la banque seed Agilite / XP.
+- la generation source-driven fonctionne maintenant, mais la variete inter-sessions, le rattachement explicite des questions aux concepts et l estimation de temps restent encore a renforcer.
 
 ## Stack
 
@@ -108,6 +109,14 @@ Cet index :
 - resume des themes dominants du cours;
 - detecte des signaux de style a partir des anciens examens;
 - alimente les prompts de generation et de correction.
+
+## Generation d examen
+
+Le MVP sait maintenant produire un examen d exemple a partir du cours actif importe.
+
+En pratique :
+- si l IA est disponible, les prompts utilisent le cours actif, les anciens examens et l index pedagogique;
+- si l IA n est pas disponible, un fallback local genere quand meme un examen contextualise a partir des sources importees.
 
 ## Tests
 

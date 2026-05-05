@@ -13,3 +13,5 @@ Chaque bug detecte doit etre :
 - `BUG-001` `P1` - Corrige dans l'issue 9. Les textes ingeres sont maintenant reutilises par le contexte de generation, et la lecture de secours ne bloque plus la progression du pipeline.
 - `BUG-002` `P3` - Corrige dans l'issue 9. Des artefacts d'encodage apparaissaient dans certaines cartes d'upload et d'ingestion, ce qui degradiait la lisibilite du suivi de sources.
 - `BUG-003` `P1` - Corrige dans l'issue 9. L'endpoint d'ingestion acceptait un cours vide sans aucune source ni ancien examen, ce qui pouvait afficher un statut trompeur et lancer un pipeline sans matiere exploitable.
+- `BUG-004` `P1` - Corrige dans l'issue 11. Les prompts IA de generation et de correction restaient encore rediges comme si tous les cours etaient le chapitre Agilite / XP, ce qui biaisait la generation pour un cours televerse differemment.
+- `BUG-005` `P1` - Corrige dans l'issue 11. Le fallback de generation renvoyait encore essentiellement l examen seed Agilite / XP au lieu de produire un vrai examen d exemple a partir du cours utilisateur importe.

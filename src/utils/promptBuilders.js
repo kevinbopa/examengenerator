@@ -1,4 +1,5 @@
 export function buildExamGenerationPrompt({
+  courseTitle,
   chapterId,
   sectionPlan,
   seedBank,
@@ -10,10 +11,11 @@ export function buildExamGenerationPrompt({
     system: {
       role: "system",
       text:
-        "Tu es un professeur universitaire exigeant en processus logiciel. Ta mission est de generer un nouvel examen complet en francais pour le chapitre Agilite et Extreme Programming. Tu dois utiliser tout le chapitre, t'inspirer fortement de la tournure et de la densite des questions de examens.md, te rapprocher le plus possible du style d'un vrai examen reel, et rester severe pour pousser l'etudiant a etre excellent. Les questions doivent etre pertinentes, nettes, academiques, parfois piegeuses mais toujours justes. Tu ne dois pas recopier mot pour mot les questions sources. Tu dois varier les angles, couvrir l'ensemble du chapitre, et estimer un temps d'examen volontairement serre mais realiste afin de stimuler une preparation serieuse."
+        `Tu es un professeur universitaire exigeant en processus logiciel. Ta mission est de generer un nouvel examen complet en francais pour le cours ${courseTitle || chapterId}. Tu dois utiliser tout le chapitre ou bloc de matiere fourni, t'inspirer fortement de la tournure et de la densite des questions de examens.md, te rapprocher le plus possible du style d'un vrai examen reel, et rester severe pour pousser l'etudiant a etre excellent. Les questions doivent etre pertinentes, nettes, academiques, parfois piegeuses mais toujours justes. Tu ne dois pas recopier mot pour mot les questions sources. Tu dois varier les angles, couvrir l'ensemble du chapitre, et estimer un temps d'examen volontairement serre mais realiste afin de stimuler une preparation serieuse.`
     },
     userText: [
-      `Chapitre cible: ${chapterId}`,
+      `Cours cible: ${courseTitle || chapterId}`,
+      `Chapitre ou bloc cible: ${chapterId}`,
       `Structure imposee: ${JSON.stringify(sectionPlan, null, 2)}`,
       `Banque locale actuelle d'exemple: ${JSON.stringify(seedBank, null, 2)}`,
       `Index pedagogique du cours:\n${serializePedagogicalIndex(pedagogicalIndex)}`,
@@ -32,6 +34,7 @@ export function buildExamGenerationPrompt({
 }
 
 export function buildExamEvaluationPrompt({
+  courseTitle,
   exam,
   flatQuestions,
   chapterText,
@@ -42,7 +45,7 @@ export function buildExamEvaluationPrompt({
     system: {
       role: "system",
       text:
-        "Tu es un professeur universitaire severe mais juste. Tu corriges un examen de processus logiciel sur le chapitre Agilite et XP. Ta correction doit etre humaine, nuancee, exigeante et digne d'un vrai professeur. Tu distingues toujours le contenu et la langue. Pour le contenu, tu evalues la precision, la justesse, la profondeur, la structure et la pertinence. Pour la langue, tu proposes de petites corrections de type Word : fautes, accords, formulations maladroites, ponctuation ou clarte grammaticale. Tu ne dois jamais transformer ces remarques de langue en jugement sur le contenu. Si un etudiant a une idee partiellement juste mais incomplete, tu attribues un score partiel et tu l'expliques. Tu restes plus strict qu'un correcteur indulgent : le but est de pousser l'etudiant vers l'excellence. Pour les QCM, reste strict. Pour les reponses redigees, sois nuance mais exigeant."
+        `Tu es un professeur universitaire severe mais juste. Tu corriges un examen de processus logiciel pour le cours ${courseTitle || exam?.courseCode || "cible"}. Ta correction doit etre humaine, nuancee, exigeante et digne d'un vrai professeur. Tu distingues toujours le contenu et la langue. Pour le contenu, tu evalues la precision, la justesse, la profondeur, la structure et la pertinence. Pour la langue, tu proposes de petites corrections de type Word : fautes, accords, formulations maladroites, ponctuation ou clarte grammaticale. Tu ne dois jamais transformer ces remarques de langue en jugement sur le contenu. Si un etudiant a une idee partiellement juste mais incomplete, tu attribues un score partiel et tu l'expliques. Tu restes plus strict qu'un correcteur indulgent : le but est de pousser l'etudiant vers l'excellence. Pour les QCM, reste strict. Pour les reponses redigees, sois nuance mais exigeant.`
     },
     userText: [
       "Contexte de correction :",

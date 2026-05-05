@@ -6,6 +6,10 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import OpenAI from "openai";
 import { examBlueprint, flattenQuestions } from "../src/data/examData.js";
 import {
+  buildSourceDrivenFallbackExam,
+  prepareCourseForGeneration
+} from "./courseExamGenerator.mjs";
+import {
   addCourseDocument,
   addPastExam,
   createLocalCourse,
@@ -142,7 +146,7 @@ app.post("/api/courses/:courseId/pedagogical-index", async (request, response) =
 
 app.post("/api/generate-exam", async (request, response) => {
   const catalog = await loadCourseCatalog(projectRoot);
-  const activeCourse = getActiveCourse(catalog, request.body?.courseId);
+  const activeCourse = prepareCourseForGeneration(getActiveCourse(catalog, request.body?.courseId));
 
   if (!process.env.OPENAI_API_KEY) {
     response.json({
@@ -303,6 +307,7 @@ async function generateExamWithAI(course) {
     apiKey: process.env.OPENAI_API_KEY
   });
   const prompt = buildExamGenerationPrompt({
+    courseTitle: course.title,
     chapterId: course.courseCode,
     sectionPlan: sectionGenerationPlan(),
     seedBank: seedBankForPrompt(),
@@ -361,6 +366,7 @@ async function evaluateExamWithAI(exam, answersById) {
       answersById[question.id] ?? (question.type === "mcq" ? null : "")
   }));
   const prompt = buildExamEvaluationPrompt({
+    courseTitle: course.title,
     exam,
     flatQuestions,
     chapterText,
@@ -517,12 +523,18 @@ async function generateCorrectedCopyWithAI(exam, answersById) {
 }
 
 function buildFallbackExam(course = null) {
+  const preparedCourse = course ? prepareCourseForGeneration(course) : null;
+
+  if (preparedCourse && hasSourceDrivenGenerationMaterial(preparedCourse)) {
+    return buildSourceDrivenFallbackExam(preparedCourse);
+  }
+
   const cloned = structuredClone(examBlueprint);
-  cloned.title = `${examBlueprint.title} - Banque locale`;
-  cloned.courseId = course?.id || "seed-course";
-  cloned.courseCode = course?.courseCode || examBlueprint.chapter;
-  cloned.courseTitle = course?.title || "Cours seed";
-  cloned.chapter = course?.courseCode || examBlueprint.chapter;
+  cloned.title = `${preparedCourse?.title || examBlueprint.title} - Banque locale`;
+  cloned.courseId = preparedCourse?.id || "seed-course";
+  cloned.courseCode = preparedCourse?.courseCode || examBlueprint.chapter;
+  cloned.courseTitle = preparedCourse?.title || "Cours seed";
+  cloned.chapter = preparedCourse?.courseCode || examBlueprint.chapter;
   cloned.generatedBy = "fallback";
   cloned.generatedAt = new Date().toISOString();
   cloned.aiMode = false;
@@ -534,6 +546,27 @@ function buildFallbackExam(course = null) {
     questions: shuffle(section.questions)
   }));
   return cloned;
+}
+
+function hasSourceDrivenGenerationMaterial(course) {
+  return Boolean(
+    course &&
+    hasImportedCourseMaterial(course) &&
+    (
+      course.pedagogicalIndex?.concepts?.length ||
+      [...(course.sources || []), ...(course.pastExams || [])].some(
+        (source) => source.status === "ready" && source.segments?.length
+      )
+    )
+  );
+}
+
+function hasImportedCourseMaterial(course) {
+  const courseId = String(course.id || "").toLowerCase();
+  return [...(course.sources || []), ...(course.pastExams || [])].some((source) => {
+    const normalizedPath = String(source.filePath || "").toLowerCase().replace(/\\/g, "/");
+    return normalizedPath.startsWith(`${courseId}/`);
+  });
 }
 
 function buildFallbackCorrectedCopy(exam, answersById) {

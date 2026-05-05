@@ -82,6 +82,12 @@ La suite couvre aussi l'index pedagogique du cours :
 - persistance backend de l index sur le cours;
 - cas de cours incomplet avec warnings.
 
+La suite couvre aussi la generation source-driven du MVP :
+- prompts IA generiques par cours au lieu d etre figes sur Agilite / XP;
+- fallback de generation contextualise a partir des sources televersees;
+- creation d un premier examen d exemple pour un cours utilisateur importe;
+- maintien du fallback seed historique pour le cours local par defaut.
+
 ## Pourquoi le mode fallback en premier
 
 Le mode fallback est le plus stable pour une suite automatique locale car :

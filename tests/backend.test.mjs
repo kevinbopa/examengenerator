@@ -342,6 +342,62 @@ test("POST /api/generate-exam returns the fallback exam when AI is disabled", { 
   assert.ok(payload.exam.title.includes("Banque locale"));
 });
 
+test(
+  "POST /api/generate-exam builds a source-driven fallback exam from an uploaded course",
+  { concurrency: false },
+  async () => {
+    const createResponse = await postJson("/api/courses", {
+      title: "Architecture logicielle",
+      courseCode: "GLO4001",
+      description: "Cours de conception et d'architecture"
+    });
+    const created = await createResponse.json();
+
+    await postJson(`/api/courses/${created.course.id}/documents`, {
+      fileName: "notes-cours.md",
+      mimeType: "text/markdown",
+      contentBase64: Buffer.from(
+        "# Styles architecturaux\nLes styles architecturaux definissent l organisation globale du systeme.\n\n# Decisions d architecture\nLes decisions doivent etre justifiees et comparees.\n\n# Refactoring\nLe refactoring aide a faire evoluer la structure.",
+        "utf8"
+      ).toString("base64")
+    });
+
+    await postJson(`/api/courses/${created.course.id}/past-exams`, {
+      fileName: "intra-h2025.txt",
+      mimeType: "text/plain",
+      contentBase64: Buffer.from(
+        "Expliquez un style architectural. Comparez deux options. Justifiez votre choix. Analysez le code propose.",
+        "utf8"
+      ).toString("base64"),
+      session: "Hiver",
+      year: 2025,
+      sourceName: "Intra Hiver 2025"
+    });
+
+    await postJson(`/api/courses/${created.course.id}/ingest`, {});
+
+    const response = await postJson("/api/generate-exam", {
+      courseId: created.course.id
+    });
+
+    assert.equal(response.status, 200);
+    const payload = await response.json();
+
+    assert.equal(payload.mode, "fallback");
+    assert.equal(payload.exam.courseId, created.course.id);
+    assert.equal(payload.exam.courseCode, "GLO4001");
+    assert.equal(payload.exam.courseTitle, "Architecture logicielle");
+    assert.match(payload.exam.title, /Architecture logicielle/i);
+    assert.equal(payload.exam.aiMode, false);
+    assert.equal(payload.exam.sections.length, examBlueprint.sections.length);
+
+    const prompts = payload.exam.sections.flatMap((section) => section.questions.map((question) => question.prompt));
+    const serializedPrompts = prompts.join("\n");
+    assert.match(serializedPrompts, /architectur|refactoring|decision/i);
+    assert.match(serializedPrompts, /justif|compare|analyse/i);
+  }
+);
+
 test("POST /api/evaluate-exam rejects an invalid exam payload", { concurrency: false }, async () => {
   const response = await postJson("/api/evaluate-exam", {
     exam: { invalid: true },

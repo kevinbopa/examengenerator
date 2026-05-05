@@ -172,6 +172,10 @@ Critere d'acceptation :
 - un examen d'exemple du cours peut etre cree des que les sources minimales sont disponibles;
 - la logique est testee.
 
+Statut :
+- terminee
+- livree avec generation fallback source-driven depuis le cours actif, auto-preparation de l index pedagogique si necessaire, prompts IA generiques par cours et premier examen d exemple cree a partir des sources importees
+
 ### Issue 12 - Suivi systematique des bugs
 
 En tant qu'equipe produit,
@@ -194,7 +198,8 @@ Statut :
 
 ## Ordre recommande
 
-1. Issue 11 - Generation a partir des sources
+1. Renforcer la variete inter-sessions et l anti-duplication
+2. Associer plus finement chaque question aux concepts du cours
 
 ## Definition of Done du sprint
 
