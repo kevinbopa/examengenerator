@@ -5,7 +5,7 @@
 - Sprint 1 termine
 - Issues GitHub terminees : `#1`, `#2`, `#3`, `#4`, `#5`
 - Mode de travail actif : TDD par defaut sur la logique metier, les helpers critiques et les endpoints
-- Limite majeure actuelle : le produit reste trop centre sur un chapitre localement code en dur
+- Limite majeure actuelle : la generation d'examen reste encore largement dependante de la banque seed tant que l'upload et l'ingestion ne sont pas livres
 
 ## Epic 1 - Fondations produit
 
@@ -17,7 +17,7 @@
 
 ## Epic 2 - Gestion des cours et des sources
 
-- [ ] Creer un modele de cours generique
+- [x] Creer un modele de cours generique
 - [ ] Permettre l'upload de documents de cours
 - [ ] Permettre l'upload d'anciens examens
 - [ ] Definir un stockage local MVP pour les sources
@@ -79,9 +79,9 @@
 
 ## Sprint 2 MVP propose
 
-- [ ] Creer un modele de cours generique
+- [x] Creer un modele de cours generique
 - [ ] Ajouter l'upload des documents de cours
 - [ ] Ajouter l'upload des anciens examens
 - [ ] Construire le pipeline d'ingestion MVP
 - [ ] Generer un examen a partir des sources televersees
-- [ ] Formaliser le suivi des bugs avec une issue dediee a chaque bug detecte
+- [x] Formaliser le suivi des bugs avec une issue dediee a chaque bug detecte

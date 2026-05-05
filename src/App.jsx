@@ -9,6 +9,7 @@ import { gradeExam } from "./utils/grading";
 
 export default function App() {
   const [activeExam, setActiveExam] = useState(() => structuredClone(examBlueprint));
+  const [activeCourse, setActiveCourse] = useState(null);
   const [phase, setPhase] = useState("landing");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answersById, setAnswersById] = useState({});
@@ -64,8 +65,10 @@ export default function App() {
       const response = await fetch("/api/health");
       const payload = await response.json();
       setAiConfigured(Boolean(payload.aiConfigured));
+      setActiveCourse(payload.activeCourse || null);
     } catch {
       setAiConfigured(false);
+      setActiveCourse(null);
     }
   }
 
@@ -83,7 +86,8 @@ export default function App() {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          chapterId: examBlueprint.chapter
+          chapterId: examBlueprint.chapter,
+          courseId: activeCourse?.id
         })
       });
       const payload = await response.json();
@@ -190,6 +194,7 @@ export default function App() {
           {phase === "landing" ? (
             <Hero
               exam={activeExam}
+              activeCourse={activeCourse}
               questions={questions}
               onStart={startExam}
               aiConfigured={aiConfigured}

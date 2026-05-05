@@ -46,6 +46,11 @@ La suite couvre aussi la formalisation des prompts IA :
 - preservation du fond dans les aides linguistiques;
 - contraintes explicites de generation et de correction.
 
+La suite couvre aussi le nouveau modele de cours :
+- creation et normalisation d'un `Course`;
+- gestion d'un catalogue local avec cours actif;
+- exposition backend des routes `GET /api/courses` et `POST /api/courses`.
+
 ## Pourquoi le mode fallback en premier
 
 Le mode fallback est le plus stable pour une suite automatique locale car :

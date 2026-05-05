@@ -39,6 +39,10 @@ Critere d'acceptation :
 - la logique actuelle peut referencer un cours actif;
 - la logique est testee en TDD.
 
+Statut :
+- terminee
+- livree avec modele partage, catalogue local seed, endpoints `GET /api/courses`, `POST /api/courses` et `activeCourse` expose dans `GET /api/health`
+
 ### Issue 7 - Ajouter l'upload des documents de cours
 
 En tant qu'etudiant,
@@ -166,15 +170,17 @@ Critere d'acceptation :
 - une politique de triage est documentee;
 - tout bug detecte pendant le dev doit etre note avant correction ou explicitement rattache a une issue existante.
 
+Statut :
+- terminee cote pilotage repo
+- livree avec templates GitHub, politique de triage et backlog local de bugs
+
 ## Ordre recommande
 
-1. Issue 6 - Modele de cours
-2. Issue 7 - Upload des documents de cours
-3. Issue 8 - Upload des anciens examens
-4. Issue 9 - Pipeline d'ingestion MVP
-5. Issue 10 - Index pedagogique
-6. Issue 11 - Generation a partir des sources
-7. Issue 12 - Suivi systematique des bugs
+1. Issue 7 - Upload des documents de cours
+2. Issue 8 - Upload des anciens examens
+3. Issue 9 - Pipeline d'ingestion MVP
+4. Issue 10 - Index pedagogique
+5. Issue 11 - Generation a partir des sources
 
 ## Definition of Done du sprint
 

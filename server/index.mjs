@@ -5,6 +5,11 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import OpenAI from "openai";
 import { examBlueprint, flattenQuestions } from "../src/data/examData.js";
+import {
+  createLocalCourse,
+  getActiveCourse,
+  loadCourseCatalog
+} from "./courseStore.mjs";
 import { normalizeCorrectedCopyPayload } from "../src/utils/correctedCopy.js";
 import {
   buildCorrectedCopyPrompt,
@@ -17,27 +22,54 @@ import { gradeExam } from "../src/utils/grading.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, "..");
-const chapterFile = path.join(projectRoot, "H26_GLO2003_09_Agilite_XP.md");
-const examplesFile = path.join(projectRoot, "examens.md");
 
 export const app = express();
 app.use(express.json({ limit: "3mb" }));
 
-app.get("/api/health", (_request, response) => {
+app.get("/api/health", async (_request, response) => {
+  const catalog = await loadCourseCatalog(projectRoot);
+  const activeCourse = getActiveCourse(catalog);
+
   response.json({
     ok: true,
     aiConfigured: Boolean(process.env.OPENAI_API_KEY),
     model: process.env.OPENAI_MODEL || "gpt-5.2",
-    chapter: examBlueprint.chapter
+    chapter: examBlueprint.chapter,
+    activeCourse
   });
 });
 
+app.get("/api/courses", async (_request, response) => {
+  const catalog = await loadCourseCatalog(projectRoot);
+  response.json(catalog);
+});
+
+app.post("/api/courses", async (request, response) => {
+  try {
+    const created = await createLocalCourse(projectRoot, {
+      title: request.body?.title,
+      courseCode: request.body?.courseCode,
+      description: request.body?.description
+    });
+
+    response.status(201).json({
+      course: created.course,
+      activeCourseId: created.catalog.activeCourseId
+    });
+  } catch (error) {
+    response.status(400).json({
+      error: error.message || "Course invalide."
+    });
+  }
+});
+
 app.post("/api/generate-exam", async (request, response) => {
-  const chapterId = request.body?.chapterId || examBlueprint.chapter;
+  const catalog = await loadCourseCatalog(projectRoot);
+  const activeCourse = getActiveCourse(catalog, request.body?.courseId);
 
   if (!process.env.OPENAI_API_KEY) {
     response.json({
-      exam: buildFallbackExam(),
+      exam: buildFallbackExam(activeCourse),
       mode: "fallback",
       reason: "OPENAI_API_KEY manquante"
     });
@@ -45,7 +77,7 @@ app.post("/api/generate-exam", async (request, response) => {
   }
 
   try {
-    const generatedExam = await generateExamWithAI(chapterId);
+    const generatedExam = await generateExamWithAI(activeCourse);
     response.json({
       exam: generatedExam,
       mode: "ai"
@@ -53,7 +85,7 @@ app.post("/api/generate-exam", async (request, response) => {
   } catch (error) {
     console.error("AI exam generation failed:", error);
     response.json({
-      exam: buildFallbackExam(),
+      exam: buildFallbackExam(activeCourse),
       mode: "fallback",
       reason: "generation IA indisponible"
     });
@@ -187,17 +219,14 @@ if (shouldAutoStartServer()) {
   startServer();
 }
 
-async function generateExamWithAI(chapterId) {
-  const [chapterText, examplesText] = await Promise.all([
-    fs.readFile(chapterFile, "utf8"),
-    fs.readFile(examplesFile, "utf8")
-  ]);
+async function generateExamWithAI(course) {
+  const { chapterText, examplesText } = await loadCoursePromptContext(course);
 
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
   });
   const prompt = buildExamGenerationPrompt({
-    chapterId,
+    chapterId: course.courseCode,
     sectionPlan: sectionGenerationPlan(),
     seedBank: seedBankForPrompt(),
     chapterText,
@@ -237,14 +266,12 @@ async function generateExamWithAI(chapterId) {
   });
 
   const parsed = JSON.parse(response.output_text);
-  return sanitizeGeneratedExam(parsed);
+  return sanitizeGeneratedExam(parsed, course);
 }
 
 async function evaluateExamWithAI(exam, answersById) {
-  const [chapterText, examplesText] = await Promise.all([
-    fs.readFile(chapterFile, "utf8"),
-    fs.readFile(examplesFile, "utf8")
-  ]);
+  const course = await resolveCourseForExam(exam);
+  const { chapterText, examplesText } = await loadCoursePromptContext(course);
 
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
@@ -410,9 +437,13 @@ async function generateCorrectedCopyWithAI(exam, answersById) {
   return parsed;
 }
 
-function buildFallbackExam() {
+function buildFallbackExam(course = null) {
   const cloned = structuredClone(examBlueprint);
   cloned.title = `${examBlueprint.title} - Banque locale`;
+  cloned.courseId = course?.id || "seed-course";
+  cloned.courseCode = course?.courseCode || examBlueprint.chapter;
+  cloned.courseTitle = course?.title || "Cours seed";
+  cloned.chapter = course?.courseCode || examBlueprint.chapter;
   cloned.generatedBy = "fallback";
   cloned.generatedAt = new Date().toISOString();
   cloned.aiMode = false;
@@ -472,12 +503,15 @@ function sectionGenerationPlan() {
   }));
 }
 
-function sanitizeGeneratedExam(exam) {
+function sanitizeGeneratedExam(exam, course) {
   const sectionMeta = new Map(examBlueprint.sections.map((section) => [section.id, section]));
 
   return {
     title: exam.title || examBlueprint.title,
-    chapter: examBlueprint.chapter,
+    courseId: course.id,
+    courseCode: course.courseCode,
+    courseTitle: course.title,
+    chapter: course.courseCode,
     durationMinutes: Number(exam.durationMinutes) || examBlueprint.durationMinutes,
     timingRationale:
       exam.timingRationale ||
@@ -504,6 +538,35 @@ function sanitizeGeneratedExam(exam) {
       };
     })
   };
+}
+
+async function resolveCourseForExam(exam) {
+  const catalog = await loadCourseCatalog(projectRoot);
+  return getActiveCourse(catalog, exam?.courseId);
+}
+
+async function loadCoursePromptContext(course) {
+  const chapterSource = course.sources[0];
+  const chapterText = chapterSource
+    ? await fs.readFile(resolveProjectFile(chapterSource.filePath), "utf8")
+    : await fs.readFile(resolveProjectFile("H26_GLO2003_09_Agilite_XP.md"), "utf8");
+
+  const exampleFragments = await Promise.all(
+    (course.pastExams || []).map(async (pastExam) =>
+      fs.readFile(resolveProjectFile(pastExam.filePath), "utf8")
+    )
+  );
+
+  return {
+    chapterText,
+    examplesText: exampleFragments.join("\n\n")
+  };
+}
+
+function resolveProjectFile(relativeOrAbsolutePath) {
+  return path.isAbsolute(relativeOrAbsolutePath)
+    ? relativeOrAbsolutePath
+    : path.join(projectRoot, relativeOrAbsolutePath);
 }
 
 function sanitizeEvaluation(parsed, flatQuestions) {

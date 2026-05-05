@@ -1,8 +1,12 @@
 import assert from "node:assert/strict";
-import { after, before, test } from "node:test";
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { after, before, beforeEach, test } from "node:test";
 
 process.env.EXAM_SERVER_DISABLE_AUTOSTART = "1";
 process.env.OPENAI_API_KEY = "";
+process.env.COURSE_CATALOG_FILE = buildCatalogFile("default");
 
 const [{ app }, { examBlueprint, flattenQuestions }] = await Promise.all([
   import("../server/index.mjs"),
@@ -13,6 +17,7 @@ let server;
 let baseUrl;
 
 before(async () => {
+  await fs.rm(process.env.COURSE_CATALOG_FILE, { force: true });
   server = app.listen(0);
   await new Promise((resolve) => {
     server.once("listening", resolve);
@@ -20,6 +25,11 @@ before(async () => {
 
   const address = server.address();
   baseUrl = `http://127.0.0.1:${address.port}`;
+});
+
+beforeEach(async (context) => {
+  process.env.COURSE_CATALOG_FILE = buildCatalogFile(slugify(context.name));
+  await fs.rm(process.env.COURSE_CATALOG_FILE, { force: true });
 });
 
 after(async () => {
@@ -36,9 +46,11 @@ after(async () => {
       resolve();
     });
   });
+
+  await fs.rm(process.env.COURSE_CATALOG_FILE, { force: true });
 });
 
-test("GET /api/health exposes fallback-ready backend state", async () => {
+test("GET /api/health exposes fallback-ready backend state", { concurrency: false }, async () => {
   const response = await fetch(`${baseUrl}/api/health`);
   assert.equal(response.status, 200);
 
@@ -46,10 +58,45 @@ test("GET /api/health exposes fallback-ready backend state", async () => {
   assert.equal(payload.ok, true);
   assert.equal(payload.aiConfigured, false);
   assert.equal(payload.chapter, examBlueprint.chapter);
+  assert.equal(payload.activeCourse.courseCode, examBlueprint.chapter);
   assert.ok(payload.model);
 });
 
-test("POST /api/generate-exam returns the fallback exam when AI is disabled", async () => {
+test(
+  "GET /api/courses exposes the local course catalog and active course",
+  { concurrency: false },
+  async () => {
+  const response = await fetch(`${baseUrl}/api/courses`);
+  assert.equal(response.status, 200);
+
+  const payload = await response.json();
+  assert.ok(Array.isArray(payload.courses));
+  assert.ok(payload.courses.length >= 1);
+  assert.equal(payload.activeCourseId, payload.courses[0].id);
+  }
+);
+
+test("POST /api/courses creates and persists a new local course", { concurrency: false }, async () => {
+  const response = await postJson("/api/courses", {
+    title: "Architecture logicielle",
+    courseCode: "GLO4001",
+    description: "Cours de conception et d'architecture"
+  });
+
+  assert.equal(response.status, 201);
+  const payload = await response.json();
+
+  assert.equal(payload.course.id, "glo4001");
+  assert.equal(payload.course.ingestionStatus, "draft");
+  assert.equal(payload.activeCourseId, "glo4001");
+
+  const catalogResponse = await fetch(`${baseUrl}/api/courses`);
+  const catalogPayload = await catalogResponse.json();
+  assert.equal(catalogPayload.activeCourseId, "glo4001");
+  assert.ok(catalogPayload.courses.some((course) => course.id === "glo4001"));
+});
+
+test("POST /api/generate-exam returns the fallback exam when AI is disabled", { concurrency: false }, async () => {
   const response = await postJson("/api/generate-exam", {
     chapterId: examBlueprint.chapter
   });
@@ -64,7 +111,7 @@ test("POST /api/generate-exam returns the fallback exam when AI is disabled", as
   assert.ok(payload.exam.title.includes("Banque locale"));
 });
 
-test("POST /api/evaluate-exam rejects an invalid exam payload", async () => {
+test("POST /api/evaluate-exam rejects an invalid exam payload", { concurrency: false }, async () => {
   const response = await postJson("/api/evaluate-exam", {
     exam: { invalid: true },
     answersById: {}
@@ -75,7 +122,7 @@ test("POST /api/evaluate-exam rejects an invalid exam payload", async () => {
   assert.equal(payload.error, "Exam invalide.");
 });
 
-test("POST /api/evaluate-exam returns a graded fallback result", async () => {
+test("POST /api/evaluate-exam returns a graded fallback result", { concurrency: false }, async () => {
   const answersById = {
     "qcm-1": 1,
     "semi-1":
@@ -98,7 +145,10 @@ test("POST /api/evaluate-exam returns a graded fallback result", async () => {
   assert.ok(Array.isArray(payload.result.overallFeedback.improvementPriorities));
 });
 
-test("POST /api/generate-corrected-copy returns a safe fallback corrected copy", async () => {
+test(
+  "POST /api/generate-corrected-copy returns a safe fallback corrected copy",
+  { concurrency: false },
+  async () => {
   const answersById = {
     "semi-2":
       "Le client present permet de reduire plusieurs documents mais si il est absent il y a plus de malentendus."
@@ -117,9 +167,13 @@ test("POST /api/generate-corrected-copy returns a safe fallback corrected copy",
   assert.equal(payload.correctedCopy.entries.length, 1);
   assert.equal(payload.correctedCopy.entries[0].original, answersById["semi-2"]);
   assert.equal(payload.correctedCopy.entries[0].corrected, answersById["semi-2"]);
-});
+  }
+);
 
-test("POST /writing-assistant/correct returns no suggestions when AI is disabled", async () => {
+test(
+  "POST /writing-assistant/correct returns no suggestions when AI is disabled",
+  { concurrency: false },
+  async () => {
   const response = await postJson("/writing-assistant/correct", {
     text: "Cette reponse contient peut etre des fautes mais l IA est desactivee.",
     action: "review"
@@ -128,7 +182,8 @@ test("POST /writing-assistant/correct returns no suggestions when AI is disabled
   assert.equal(response.status, 200);
   const payload = await response.json();
   assert.deepEqual(payload, { suggestions: [] });
-});
+  }
+);
 
 async function postJson(route, body) {
   return fetch(`${baseUrl}${route}`, {
@@ -138,4 +193,15 @@ async function postJson(route, body) {
     },
     body: JSON.stringify(body)
   });
+}
+
+function buildCatalogFile(label) {
+  return path.join(os.tmpdir(), `examengenerator-course-catalog-${process.pid}-${label}.json`);
+}
+
+function slugify(value) {
+  return String(value || "test")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }

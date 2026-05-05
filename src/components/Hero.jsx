@@ -1,7 +1,14 @@
 import { useMemo, useState } from "react";
 import HeroVisual from "./HeroVisual";
 
-export default function Hero({ exam, questions, onStart, aiConfigured, isGenerating }) {
+export default function Hero({
+  exam,
+  activeCourse,
+  questions,
+  onStart,
+  aiConfigured,
+  isGenerating
+}) {
   const [previewChoice, setPreviewChoice] = useState(null);
   const previewQuestion = useMemo(
     () => questions.find((question) => question.type === "mcq") ?? questions[0],
@@ -9,14 +16,16 @@ export default function Hero({ exam, questions, onStart, aiConfigured, isGenerat
   );
 
   const totalQuestions = questions.length;
+  const heroCourseTitle = activeCourse?.title || exam.courseTitle || "Agilite et Extreme Programming";
+  const heroCourseCode = activeCourse?.courseCode || exam.courseCode || "Processus logiciel";
 
   return (
     <section className="landing-stack">
       <article className="hero-card">
         <div className="hero-grid">
           <div className="hero-content">
-            <p className="hero-badge">Processus logiciel • Chapitre agilite &amp; XP</p>
-            <h1>Examen complet Agilite et Extreme Programming</h1>
+            <p className="hero-badge">{heroCourseCode} • Cours actif</p>
+            <h1>Examen complet {heroCourseTitle}</h1>
             <p className="hero-copy">
               Un vrai examen de revision, pense comme une plateforme de travail evolutive :
               QCM, questions semi-developpement, questions de developpement et questions liees
@@ -46,14 +55,14 @@ export default function Hero({ exam, questions, onStart, aiConfigured, isGenerat
               <button className="primary-button hero-primary" onClick={onStart} disabled={isGenerating}>
                 {isGenerating ? "Generation en cours..." : "Commencer l'examen"}
               </button>
-              <button className="secondary-button">Apercu du chapitre</button>
+              <button className="secondary-button">Apercu du cours</button>
             </div>
 
             <div className={`hero-ai-banner ${aiConfigured ? "active" : ""}`}>
               <strong>{aiConfigured ? "Mode IA actif" : "Mode IA non configure"}</strong>
               <span>
                 {aiConfigured
-                  ? "Des questions sont generees intelligemment a partir du chapitre et de la banque actuelle."
+                  ? "Des questions sont generees intelligemment a partir du cours actif et de sa banque d examens."
                   : "La plateforme utilise pour le moment la banque locale de revision."}
               </span>
             </div>

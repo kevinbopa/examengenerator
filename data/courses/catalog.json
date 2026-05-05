@@ -1,0 +1,38 @@
+{
+  "activeCourseId": "h26-glo2003-09-agilite-xp",
+  "courses": [
+    {
+      "id": "h26-glo2003-09-agilite-xp",
+      "title": "Agilite et Extreme Programming",
+      "courseCode": "H26_GLO2003_09_Agilite_XP",
+      "description": "Cours seed du projet, utilise comme reference initiale avant l'upload des vraies sources utilisateur.",
+      "sources": [
+        {
+          "id": "chapter-agilite-xp",
+          "title": "Chapitre Agilite et XP",
+          "kind": "courseDocument",
+          "format": "md",
+          "filePath": "H26_GLO2003_09_Agilite_XP.md",
+          "status": "ready",
+          "session": "",
+          "year": null
+        }
+      ],
+      "pastExams": [
+        {
+          "id": "examens-seed",
+          "title": "Banque d'examens historiques",
+          "kind": "pastExam",
+          "format": "md",
+          "filePath": "examens.md",
+          "status": "ready",
+          "session": "Seed",
+          "year": 2026
+        }
+      ],
+      "ingestionStatus": "ready",
+      "createdAt": "2026-05-04T00:00:00.000Z",
+      "updatedAt": "2026-05-04T00:00:00.000Z"
+    }
+  ]
+}

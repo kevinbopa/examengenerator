@@ -18,6 +18,7 @@ L'application doit permettre a un etudiant de :
 Le projet contient deja :
 - une application React + Vite;
 - un serveur Express pour la generation et la correction IA;
+- un modele de cours generique avec catalogue local seed;
 - une interface de simulation d'examen;
 - un assistant de correction linguistique;
 - une base de questions locales et une generation dynamique d'examens;
