@@ -7,7 +7,8 @@ export default defineConfig({
     port: 5173,
     proxy: {
       "/api": "http://127.0.0.1:8787",
-      "/writing-assistant": "http://127.0.0.1:8787"
+      "/writing-assistant": "http://127.0.0.1:8787",
+      "/generated-assets": "http://127.0.0.1:8787"
     }
   }
 });

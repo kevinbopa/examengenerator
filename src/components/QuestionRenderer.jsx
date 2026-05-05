@@ -28,6 +28,20 @@ export default function QuestionRenderer({ question, answer, onAnswerChange }) {
 
   return (
     <>
+      {question.figure?.assetUrl ? (
+        <figure className="question-figure-card">
+          <img
+            src={question.figure.assetUrl}
+            alt={question.figure.alt || "Figure de support pour la question"}
+            className="question-figure-image"
+          />
+          <figcaption className="question-figure-caption">
+            <strong>Figure de support</strong>
+            <span>{question.figure.caption}</span>
+          </figcaption>
+        </figure>
+      ) : null}
+
       {question.codeSnippet ? (
         <div className="code-shell">
           <div className="code-header">

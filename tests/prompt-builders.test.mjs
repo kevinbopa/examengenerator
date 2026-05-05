@@ -22,6 +22,19 @@ test("buildExamGenerationPrompt formalizes the severe academic generation rules"
       concepts: [{ label: "iteratif", occurrenceCount: 4, sourceIds: ["cours-1"] }],
       themes: [{ label: "Recits utilisateur", keyConceptLabels: ["iteratif"] }],
       styleSignals: [{ label: "justification academique", evidenceCount: 2 }]
+    },
+    aiSourceContext: {
+      courseNarrative: "Le cours insiste sur la prise de decision et la comparaison de pratiques.",
+      highValueConcepts: ["iteratif", "feedback rapide", "responsabilite"],
+      reasoningAngles: ["comparer deux approches", "justifier un choix"],
+      commonStudentPitfalls: ["confondre agilite et absence de rigueur"],
+      visualOpportunities: [
+        {
+          topic: "boucle de retroaction",
+          whyUseful: "Le cycle gagne a etre visualise",
+          diagramHint: "schema en boucle simple"
+        }
+      ]
     }
   });
 
@@ -33,10 +46,12 @@ test("buildExamGenerationPrompt formalizes the severe academic generation rules"
   assert.match(prompt.userText, /Cours cible/i);
   assert.match(prompt.userText, /Structure imposee/i);
   assert.match(prompt.userText, /Index pedagogique du cours/i);
+  assert.match(prompt.userText, /Synthese IA des fichiers du cours/i);
   assert.match(prompt.userText, /iteratif/i);
   assert.match(prompt.userText, /generer un examen nouveau a chaque fois/i);
   assert.match(prompt.userText, /contextualiser chaque question/i);
   assert.match(prompt.userText, /exiger de la reflexion/i);
+  assert.match(prompt.userText, /figureRequest/i);
   assert.match(prompt.userText, /criteres de correction exploitables et fins/i);
 });
 

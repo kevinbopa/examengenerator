@@ -5,13 +5,14 @@ export function buildExamGenerationPrompt({
   seedBank,
   chapterText,
   examplesText,
-  pedagogicalIndex
+  pedagogicalIndex,
+  aiSourceContext
 }) {
   return {
     system: {
       role: "system",
       text:
-        `Tu es un professeur universitaire exigeant en processus logiciel. Ta mission est de generer un nouvel examen complet en francais pour le cours ${courseTitle || chapterId}. Tu dois utiliser tout le chapitre ou bloc de matiere fourni, t'inspirer fortement de la tournure et de la densite des questions de examens.md, te rapprocher le plus possible du style d'un vrai examen reel, et rester severe pour pousser l'etudiant a etre excellent. Les questions doivent etre pertinentes, nettes, academiques, parfois piegeuses mais toujours justes. Tu ne dois pas recopier mot pour mot les questions sources. Tu dois varier les angles, couvrir l'ensemble du chapitre, et estimer un temps d'examen volontairement serre mais realiste afin de stimuler une preparation serieuse.`
+        `Tu es un professeur universitaire exigeant en processus logiciel. Ta mission est de generer un nouvel examen complet en francais pour le cours ${courseTitle || chapterId}. Tu dois utiliser tout le chapitre ou bloc de matiere fourni, t'inspirer fortement de la tournure et de la densite des questions de examens.md, te rapprocher le plus possible du style d'un vrai examen reel, et rester severe pour pousser l'etudiant a etre excellent. Les questions doivent etre pertinentes, nettes, academiques, parfois piegeuses mais toujours justes. Tu ne dois pas recopier mot pour mot les questions sources. Tu dois varier les angles, couvrir l'ensemble du chapitre, et estimer un temps d'examen volontairement serre mais realiste afin de stimuler une preparation serieuse. Quand une question beneficie clairement d'un schema, d'un croquis conceptuel ou d'une figure explicative, tu peux demander un support visuel. Ce support visuel doit rester pedagogique, sobre, et strictement aligne sur le cours.`
     },
     userText: [
       `Cours cible: ${courseTitle || chapterId}`,
@@ -19,6 +20,7 @@ export function buildExamGenerationPrompt({
       `Structure imposee: ${JSON.stringify(sectionPlan, null, 2)}`,
       `Banque locale actuelle d'exemple: ${JSON.stringify(seedBank, null, 2)}`,
       `Index pedagogique du cours:\n${serializePedagogicalIndex(pedagogicalIndex)}`,
+      `Synthese IA des fichiers du cours:\n${serializeAiSourceContext(aiSourceContext)}`,
       `Exemples historiques d'enonces (examens.md):\n${examplesText}`,
       `Contenu complet du cours du chapitre:\n${chapterText}`,
       "Contraintes obligatoires :",
@@ -27,6 +29,8 @@ export function buildExamGenerationPrompt({
       "- contextualiser chaque question avec le vocabulaire, les tensions, les pratiques et les concepts reellement presents dans les sources importees",
       "- pour les questions de semi-developpement, developpement et code, exiger de la reflexion : comparaison, justification, analyse critique, transfert a une situation, nuance ou prise de decision",
       "- eviter les questions de simple definition si elles ne servent pas un raisonnement academique plus riche",
+      "- si une figure est pedagogiquement utile, demander un figureRequest tres explicite, mais limiter cela aux cas vraiment pertinents",
+      "- une figure ne doit jamais remplacer le raisonnement : elle doit seulement servir de support a une question exigeante",
       "- proposer une duree totale stricte mais defendable",
       "- ecrire des model answers concis mais tres solides",
       "- fournir des criteres de correction exploitables et fins",
@@ -140,4 +144,12 @@ function serializePedagogicalIndex(index) {
     null,
     2
   );
+}
+
+function serializeAiSourceContext(context) {
+  if (!context || typeof context !== "object") {
+    return "Aucune synthese IA des fichiers disponible.";
+  }
+
+  return JSON.stringify(context, null, 2);
 }

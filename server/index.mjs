@@ -6,6 +6,10 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import OpenAI from "openai";
 import { examBlueprint, flattenQuestions } from "../src/data/examData.js";
 import {
+  attachGeneratedQuestionFigures,
+  buildAiSourceContext
+} from "./courseAiOrchestrator.mjs";
+import {
   buildSourceDrivenFallbackExam,
   prepareCourseForGeneration
 } from "./courseExamGenerator.mjs";
@@ -17,7 +21,8 @@ import {
   getActiveCourse,
   ingestCourse,
   indexCoursePedagogically,
-  loadCourseCatalog
+  loadCourseCatalog,
+  removeCourseSource
 } from "./courseStore.mjs";
 import { normalizeCorrectedCopyPayload } from "../src/utils/correctedCopy.js";
 import {
@@ -33,7 +38,13 @@ const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, "..");
 
 export const app = express();
-app.use(express.json({ limit: "3mb" }));
+app.use(express.json({ limit: "50mb" }));
+app.use("/generated-assets", express.static(path.join(projectRoot, "data", "courses", "generated-assets")));
+
+app.use((_request, response, next) => {
+  response.set("X-Content-Type-Options", "nosniff");
+  next();
+});
 
 app.get("/api/health", async (_request, response) => {
   const catalog = await loadCourseCatalog(projectRoot);
@@ -115,6 +126,24 @@ app.post("/api/courses/:courseId/past-exams", async (request, response) => {
   }
 });
 
+app.delete("/api/courses/:courseId/documents/:sourceId", async (request, response) => {
+  try {
+    const result = await removeCourseSource(projectRoot, request.params.courseId, request.params.sourceId, "source");
+    response.json({ course: result.course });
+  } catch (error) {
+    response.status(400).json({ error: error.message || "Suppression impossible." });
+  }
+});
+
+app.delete("/api/courses/:courseId/past-exams/:sourceId", async (request, response) => {
+  try {
+    const result = await removeCourseSource(projectRoot, request.params.courseId, request.params.sourceId, "pastExam");
+    response.json({ course: result.course });
+  } catch (error) {
+    response.status(400).json({ error: error.message || "Suppression impossible." });
+  }
+});
+
 app.post("/api/courses/:courseId/ingest", async (request, response) => {
   try {
     const result = await ingestCourse(projectRoot, request.params.courseId);
@@ -185,7 +214,7 @@ app.post("/api/generate-exam", async (request, response) => {
       mode: "ai"
     });
   } catch (error) {
-    console.error("AI exam generation failed:", error);
+    console.error("[ExamenIA] AI exam generation failed:", error.message || error);
     const fallbackBatch = await generateExamBatch({
       course: activeCourse,
       count: requestedCount,
@@ -230,7 +259,7 @@ app.post("/api/evaluate-exam", async (request, response) => {
       mode: "ai"
     });
   } catch (error) {
-    console.error("AI exam evaluation failed:", error);
+    console.error("[ExamenIA] AI exam evaluation failed:", error.message || error);
     response.json({
       result: gradeExam(flattenQuestions(exam), answersById),
       mode: "fallback",
@@ -271,7 +300,7 @@ app.post("/writing-assistant/correct", async (request, response) => {
     });
     response.json({ suggestions });
   } catch (error) {
-    console.error("Writing assistant failed:", error);
+    console.error("[ExamenIA] Writing assistant failed:", error.message || error);
     response.json({ suggestions: [] });
   }
 });
@@ -302,7 +331,7 @@ app.post("/api/generate-corrected-copy", async (request, response) => {
       mode: "ai"
     });
   } catch (error) {
-    console.error("Corrected copy generation failed:", error);
+    console.error("[ExamenIA] Corrected copy generation failed:", error.message || error);
     response.json({
       correctedCopy: buildFallbackCorrectedCopy(exam, answersById),
       mode: "fallback"
@@ -312,7 +341,7 @@ app.post("/api/generate-corrected-copy", async (request, response) => {
 
 export function startServer(port = Number(process.env.EXAM_SERVER_PORT || 8787)) {
   return app.listen(port, () => {
-    console.log(`Exam API listening on http://127.0.0.1:${port}`);
+    console.log(`[ExamenIA] API listening on http://127.0.0.1:${port} (AI: ${process.env.OPENAI_API_KEY ? "configured" : "not configured"})`);
   });
 }
 
@@ -332,9 +361,15 @@ if (shouldAutoStartServer()) {
 
 async function generateExamWithAI(course) {
   const { chapterText, examplesText, pedagogicalIndex } = await loadCoursePromptContext(course);
-
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
+  });
+  const aiSourceContext = await buildAiSourceContext({
+    openai,
+    course,
+    chapterText,
+    examplesText,
+    pedagogicalIndex
   });
   const prompt = buildExamGenerationPrompt({
     courseTitle: course.title,
@@ -343,7 +378,8 @@ async function generateExamWithAI(course) {
     seedBank: seedBankForPrompt(),
     chapterText,
     examplesText,
-    pedagogicalIndex
+    pedagogicalIndex,
+    aiSourceContext
   });
 
   const response = await openai.responses.create({
@@ -379,7 +415,14 @@ async function generateExamWithAI(course) {
   });
 
   const parsed = JSON.parse(response.output_text);
-  return sanitizeGeneratedExam(parsed, course);
+  const sanitizedExam = sanitizeGeneratedExam(parsed, course);
+
+  return attachGeneratedQuestionFigures({
+    openai,
+    exam: sanitizedExam,
+    course,
+    projectRoot
+  });
 }
 
 async function evaluateExamWithAI(exam, answersById) {
@@ -624,7 +667,7 @@ async function ensureCourseReadyForGeneration(course) {
 
     return prepareCourseForGeneration(indexedResult.course || ingestionResult.course || course);
   } catch (error) {
-    console.error("Automatic course preparation failed:", error);
+    console.error("[ExamenIA] Automatic course preparation failed:", error.message || error);
     return course;
   }
 }
@@ -713,10 +756,31 @@ function sanitizeGeneratedExam(exam, course) {
           ...question,
           id: `${section.id}-${index + 1}-${slugify(question.topic || "question")}`,
           points: Number(question.points) || 2,
-          source: question.source || "Generation IA a partir du cours et des exemples d'examens."
+          source: question.source || "Generation IA a partir du cours et des exemples d'examens.",
+          figureRequest: normalizeFigureRequest(question.figureRequest)
         }))
       };
     })
+  };
+}
+
+function normalizeFigureRequest(figureRequest) {
+  if (
+    !figureRequest ||
+    typeof figureRequest !== "object" ||
+    !figureRequest.prompt ||
+    !figureRequest.alt ||
+    !figureRequest.caption ||
+    !figureRequest.pedagogicalUse
+  ) {
+    return null;
+  }
+
+  return {
+    prompt: String(figureRequest.prompt).trim(),
+    alt: String(figureRequest.alt).trim(),
+    caption: String(figureRequest.caption).trim(),
+    pedagogicalUse: String(figureRequest.pedagogicalUse).trim()
   };
 }
 
@@ -743,6 +807,10 @@ async function loadCoursePromptContext(course) {
 }
 
 async function readSourcePromptText(source) {
+  if (!source || source.status === "failed") {
+    return "";
+  }
+
   if (source?.segments?.length) {
     return source.segments.join("\n\n");
   }
@@ -752,6 +820,10 @@ async function readSourcePromptText(source) {
   }
 
   if (!source?.filePath) {
+    return "";
+  }
+
+  if (["pdf", "docx", "doc"].includes(String(source.format || "").toLowerCase())) {
     return "";
   }
 
@@ -1068,7 +1140,8 @@ function mcqSchema() {
       },
       correctOption: { type: "integer", minimum: 0, maximum: 3 },
       explanation: { type: "string" },
-      source: { type: "string" }
+      source: { type: "string" },
+      figureRequest: figureRequestSchema()
     }
   };
 }
@@ -1097,7 +1170,8 @@ function writtenSchema(responseStyle) {
       prompt: { type: "string" },
       source: { type: "string" },
       criteria: criteriaSchema(),
-      modelAnswer: { type: "string" }
+      modelAnswer: { type: "string" },
+      figureRequest: figureRequestSchema()
     }
   };
 }
@@ -1130,7 +1204,8 @@ function codeSchema() {
       prompt: { type: "string" },
       source: { type: "string" },
       criteria: criteriaSchema(),
-      modelAnswer: { type: "string" }
+      modelAnswer: { type: "string" },
+      figureRequest: figureRequestSchema()
     }
   };
 }
@@ -1191,6 +1266,27 @@ function correctedCopySchema(flatQuestions) {
         }
       }
     }
+  };
+}
+
+function figureRequestSchema() {
+  return {
+    anyOf: [
+      {
+        type: "object",
+        additionalProperties: false,
+        required: ["prompt", "alt", "caption", "pedagogicalUse"],
+        properties: {
+          prompt: { type: "string" },
+          alt: { type: "string" },
+          caption: { type: "string" },
+          pedagogicalUse: { type: "string" }
+        }
+      },
+      {
+        type: "null"
+      }
+    ]
   };
 }
 
