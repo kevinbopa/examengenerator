@@ -5,6 +5,7 @@
 - Sprint 1 termine
 - Issues GitHub terminees : `#1`, `#2`, `#3`, `#4`, `#5`
 - Mode de travail actif : TDD par defaut sur la logique metier, les helpers critiques et les endpoints
+- Limite majeure actuelle : le produit reste trop centre sur un chapitre localement code en dur
 
 ## Epic 1 - Fondations produit
 
@@ -14,33 +15,52 @@
 - [x] Ajouter une strategie de tests frontend et backend
 - [x] Formaliser les prompts IA critiques dans des builders testables
 
-## Epic 2 - Generation d'examens IA
+## Epic 2 - Gestion des cours et des sources
+
+- [ ] Creer un modele de cours generique
+- [ ] Permettre l'upload de documents de cours
+- [ ] Permettre l'upload d'anciens examens
+- [ ] Definir un stockage local MVP pour les sources
+- [ ] Afficher l'etat d'ingestion d'un cours
+
+## Epic 3 - Ingestion et base pedagogique
+
+- [ ] Extraire et nettoyer le texte des documents televerses
+- [ ] Extraire et nettoyer le texte des anciens examens televerses
+- [ ] Construire un index exploitable par cours
+- [ ] Identifier les concepts, themes et signaux de style d'examen
+- [ ] Garantir une strategie de fallback si l'ingestion echoue
+
+## Epic 4 - Generation d'examens IA par cours
 
 - [x] Formaliser le prompt de generation avec contraintes pedagogiques
+- [ ] Generer un examen a partir des sources du cours
 - [ ] Garantir la variete des questions entre deux sessions
-- [ ] Associer chaque question a des concepts du chapitre
+- [ ] Associer chaque question a des concepts du cours
 - [ ] Estimer automatiquement un temps d'examen credible
 
-## Epic 3 - Correction intelligente
+## Epic 5 - Correction intelligente
 
 - [ ] Renforcer la correction IA par bareme structure
 - [x] Ajouter une copie corrigee complete et lisible
 - [ ] Afficher un diagnostic par concept
 - [ ] Produire un feedback severe mais explicatif
+- [ ] Corriger en s'appuyant sur les sources du cours televerse
 
-## Epic 4 - Assistant linguistique
+## Epic 6 - Assistant linguistique
 
 - [x] Stabiliser la detection temps reel
 - [ ] Permettre la correction phrase par phrase
 - [ ] Ajouter un mode style academique plus fin
 - [ ] Conserver un historique leger et fiable
 
-## Epic 5 - Experience examen
+## Epic 7 - Experience examen
 
 - [ ] Finaliser le mode examen sans distraction
 - [ ] Ajouter verrouillage et soumission finale robuste
 - [ ] Ameliorer l'accessibilite et la lisibilite
 - [ ] Ajouter sauvegarde locale de progression
+- [ ] Permettre l'export de la copie et de la correction
 
 ## Sprint 0 propose
 
@@ -59,9 +79,9 @@
 
 ## Sprint 2 MVP propose
 
-- [ ] Garantir la variete inter-sessions des examens generes
-- [ ] Associer chaque question a des concepts explicites du chapitre
-- [ ] Renforcer la correction IA par bareme structure et attendu par question
-- [ ] Afficher un diagnostic par concept en fin d'examen
-- [ ] Estimer et ajuster automatiquement un temps d'examen plus credible
-- [ ] Finaliser un mode examen sans distraction avec sauvegarde locale
+- [ ] Creer un modele de cours generique
+- [ ] Ajouter l'upload des documents de cours
+- [ ] Ajouter l'upload des anciens examens
+- [ ] Construire le pipeline d'ingestion MVP
+- [ ] Generer un examen a partir des sources televersees
+- [ ] Formaliser le suivi des bugs avec une issue dediee a chaque bug detecte

@@ -1,10 +1,12 @@
 # Examen IA
 
-Plateforme de revision universitaire orientee examen pour le cours de processus logiciel, avec un premier focus sur le chapitre Agilite et Extreme Programming.
+Plateforme de revision universitaire orientee examen. L'objectif produit est de pouvoir televerser les documents d'un cours et ses anciens examens, puis de generer, faire passer et corriger de nouveaux examens credibles.
 
 ## Vision
 
 L'application doit permettre a un etudiant de :
+- televerser les documents de son cours;
+- televerser les anciens examens lies a ce cours;
 - generer un examen realiste a partir du cours et d'anciens examens;
 - passer une simulation chronometree;
 - recevoir une correction detaillee et severe fondee sur le contenu du cours;
@@ -22,6 +24,9 @@ Le projet contient deja :
 - une copie corrigee generee a la demande;
 - une architecture documentee;
 - des prompts IA centralises et testes.
+
+Limite actuelle :
+- le flux principal reste encore trop dependant de sources locales hardcodees autour du chapitre Agilite / XP.
 
 ## Stack
 
@@ -96,6 +101,9 @@ docs/
 - [docs/ROADMAP.md](./docs/ROADMAP.md)
 - [docs/SPRINT_01.md](./docs/SPRINT_01.md)
 - [docs/SPRINT_02.md](./docs/SPRINT_02.md)
+- [docs/MVP_ISSUES.md](./docs/MVP_ISSUES.md)
+- [docs/BUG_POLICY.md](./docs/BUG_POLICY.md)
+- [docs/BUG_BACKLOG.md](./docs/BUG_BACKLOG.md)
 - [docs/PROMPTS.md](./docs/PROMPTS.md)
 - [docs/architecture/README.md](./docs/architecture/README.md)
 
