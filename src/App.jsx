@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import AppSidebar from "./components/AppSidebar";
+import CourseAssetOverviewCard from "./components/CourseAssetOverviewCard";
 import CourseDocumentUploadCard from "./components/CourseDocumentUploadCard";
 import CourseIngestionCard from "./components/CourseIngestionCard";
 import CoursePedagogicalIndexCard from "./components/CoursePedagogicalIndexCard";
+import GeneratedExamLibraryCard from "./components/GeneratedExamLibraryCard";
 import Hero from "./components/Hero";
 import ExamWorkspace from "./components/ExamWorkspace";
 import PastExamUploadCard from "./components/PastExamUploadCard";
@@ -98,6 +100,9 @@ export default function App() {
       if (payload?.exam) {
         nextExam = payload.exam;
         nextMode = payload.mode || "fallback";
+        if (payload.course) {
+          setActiveCourse(payload.course);
+        }
       }
     } catch {
       nextExam = structuredClone(examBlueprint);
@@ -113,6 +118,22 @@ export default function App() {
     setCorrectedCopy(null);
     setPhase("exam");
     setIsGenerating(false);
+  }
+
+  function openGeneratedExam(examId) {
+    const generatedExam = activeCourse?.generatedExams?.find((entry) => entry.id === examId);
+    if (!generatedExam?.exam) {
+      return;
+    }
+
+    setActiveExam(generatedExam.exam);
+    setGenerationMode(generatedExam.sourceMode || "fallback");
+    setAnswersById({});
+    setCurrentIndex(0);
+    setTimeRemaining((generatedExam.exam.durationMinutes || examBlueprint.durationMinutes) * 60);
+    setResult(null);
+    setCorrectedCopy(null);
+    setPhase("exam");
   }
 
   async function handleUploadCourseDocument(file) {
@@ -307,25 +328,39 @@ export default function App() {
                 activeCourse={activeCourse}
                 questions={questions}
                 onStart={startExam}
+                onOpenLastExam={openGeneratedExam}
                 aiConfigured={aiConfigured}
                 isGenerating={isGenerating}
               />
-              <CourseDocumentUploadCard
-                activeCourse={activeCourse}
-                onUploadDocument={handleUploadCourseDocument}
-              />
-              <PastExamUploadCard
-                activeCourse={activeCourse}
-                onUploadPastExam={handleUploadPastExam}
-              />
-              <CourseIngestionCard
-                activeCourse={activeCourse}
-                onIngestCourse={handleIngestCourse}
-              />
-              <CoursePedagogicalIndexCard
-                activeCourse={activeCourse}
-                onBuildPedagogicalIndex={handleBuildPedagogicalIndex}
-              />
+
+              <section className="landing-grid">
+                <GeneratedExamLibraryCard
+                  activeCourse={activeCourse}
+                  onOpenGeneratedExam={openGeneratedExam}
+                  onGenerateNewExam={startExam}
+                  isGenerating={isGenerating}
+                />
+                <CourseAssetOverviewCard activeCourse={activeCourse} />
+                <CourseDocumentUploadCard
+                  activeCourse={activeCourse}
+                  onUploadDocument={handleUploadCourseDocument}
+                />
+                <PastExamUploadCard
+                  activeCourse={activeCourse}
+                  onUploadPastExam={handleUploadPastExam}
+                />
+              </section>
+
+              <section className="landing-grid landing-grid-wide">
+                <CourseIngestionCard
+                  activeCourse={activeCourse}
+                  onIngestCourse={handleIngestCourse}
+                />
+                <CoursePedagogicalIndexCard
+                  activeCourse={activeCourse}
+                  onBuildPedagogicalIndex={handleBuildPedagogicalIndex}
+                />
+              </section>
             </>
           ) : null}
 
@@ -378,6 +413,7 @@ export default function App() {
         </section>
 
         <RightRail
+          activeCourse={activeCourse}
           exam={activeExam}
           questions={questions}
           answersById={answersById}

@@ -1,6 +1,7 @@
 import { gradeLabel, sectionScores } from "../utils/grading";
 
 export default function RightRail({
+  activeCourse,
   exam,
   questions,
   answersById,
@@ -32,16 +33,17 @@ export default function RightRail({
     const value = answersById[question.id];
     return typeof value === "number" || (typeof value === "string" && value.trim().length > 0);
   }).length;
+  const generatedExamCount = activeCourse?.generatedExams?.length || 0;
 
   return (
     <aside className="right-rail">
       <div className="utility-row">
         <button className="utility-icon" type="button">
-          ☼
+          IA
         </button>
         <button className="utility-icon" type="button">
-          🔔
-          <span className="utility-badge">2</span>
+          EX
+          <span className="utility-badge">{generatedExamCount}</span>
         </button>
       </div>
 
@@ -50,14 +52,14 @@ export default function RightRail({
         <div className="rail-section-list">
           {sectionProgress.map((section) => (
             <div className="rail-section-item" key={section.id}>
-              <div className={`rail-icon accent-${section.accent}`}>•</div>
+              <div className={`rail-icon accent-${section.accent}`}>{section.label.slice(0, 1)}</div>
               <div className="rail-section-copy">
                 <strong>{section.label}</strong>
                 <span>{section.title.replace("Partie ", "")}</span>
                 <small>
                   {phase === "results"
                     ? `${section.score}/${section.points}`
-                    : `${section.countLabel || `${section.points} points`} • ${exam.sections.find((entry) => entry.id === section.id)?.recommendedMinutes || "--"} min`}
+                    : `${section.countLabel || `${section.points} points`} | ${exam.sections.find((entry) => entry.id === section.id)?.recommendedMinutes || "--"} min`}
                 </small>
               </div>
               <div className="rail-progress-circle">{section.percentage}%</div>
@@ -68,15 +70,16 @@ export default function RightRail({
 
       <article className="challenge-card">
         <div className="challenge-copy">
-          <h3>Prêt à relever le défi ?</h3>
+          <h3>Pret a relever le defi ?</h3>
           <p>
-            Une simulation complète, chronométrée et adaptée aux exigences du chapitre Agilité &amp; XP.
+            Une simulation complete, chronometree et enrichie a partir du cours actif et de ses
+            anciens examens.
           </p>
           <button className="dark-button" type="button" onClick={onStart}>
-            {phase === "landing" ? "Commencer maintenant" : "Relancer un examen"}
+            {phase === "landing" ? "Generer maintenant" : "Relancer un examen"}
           </button>
         </div>
-        <div className="rocket-art">🚀</div>
+        <div className="rocket-art">GO</div>
       </article>
 
       <article className="rail-card stats-card">
@@ -97,12 +100,12 @@ export default function RightRail({
             <strong>{phase === "results" ? questions.length : currentIndex + 1}</strong>
           </div>
           <div className="quick-stat-row">
-            <span>Examens completes</span>
-            <strong>{phase === "results" ? "1" : "24"}</strong>
+            <span>Examens gardes</span>
+            <strong>{generatedExamCount}</strong>
           </div>
         </div>
         <button className="stats-button" type="button">
-          Voir toutes les statistiques
+          Voir la bibliotheque
         </button>
       </article>
     </aside>

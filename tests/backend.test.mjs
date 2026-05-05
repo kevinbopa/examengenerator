@@ -340,6 +340,7 @@ test("POST /api/generate-exam returns the fallback exam when AI is disabled", { 
   assert.equal(payload.exam.aiMode, false);
   assert.equal(payload.exam.sections.length, examBlueprint.sections.length);
   assert.ok(payload.exam.title.includes("Banque locale"));
+  assert.ok(payload.course.generatedExams.length >= 1);
 });
 
 test(
@@ -384,6 +385,7 @@ test(
     const payload = await response.json();
 
     assert.equal(payload.mode, "fallback");
+    assert.equal(payload.course.generatedExams.length, 1);
     assert.equal(payload.exam.courseId, created.course.id);
     assert.equal(payload.exam.courseCode, "GLO4001");
     assert.equal(payload.exam.courseTitle, "Architecture logicielle");
@@ -395,6 +397,52 @@ test(
     const serializedPrompts = prompts.join("\n");
     assert.match(serializedPrompts, /architectur|refactoring|decision/i);
     assert.match(serializedPrompts, /justif|compare|analyse/i);
+  }
+);
+
+test(
+  "POST /api/generate-exam persists multiple generated exams for the same course",
+  { concurrency: false },
+  async () => {
+    const createResponse = await postJson("/api/courses", {
+      title: "Architecture logicielle",
+      courseCode: "GLO4001",
+      description: "Cours de conception et d'architecture"
+    });
+    const created = await createResponse.json();
+
+    await postJson(`/api/courses/${created.course.id}/documents`, {
+      fileName: "notes-cours.md",
+      mimeType: "text/markdown",
+      contentBase64: Buffer.from(
+        "# Styles architecturaux\nLes styles architecturaux definissent l organisation globale du systeme.\n\n# Refactoring\nLe refactoring aide a faire evoluer la structure.",
+        "utf8"
+      ).toString("base64")
+    });
+
+    await postJson(`/api/courses/${created.course.id}/past-exams`, {
+      fileName: "intra-h2025.txt",
+      mimeType: "text/plain",
+      contentBase64: Buffer.from(
+        "Expliquez un style architectural. Justifiez votre choix. Analysez le code propose.",
+        "utf8"
+      ).toString("base64"),
+      session: "Hiver",
+      year: 2025,
+      sourceName: "Intra Hiver 2025"
+    });
+
+    await postJson(`/api/courses/${created.course.id}/ingest`, {});
+    await postJson("/api/generate-exam", { courseId: created.course.id });
+    const secondResponse = await postJson("/api/generate-exam", { courseId: created.course.id });
+    assert.equal(secondResponse.status, 200);
+
+    const secondPayload = await secondResponse.json();
+    assert.equal(secondPayload.course.generatedExams.length, 2);
+    assert.notEqual(
+      secondPayload.course.generatedExams[0].id,
+      secondPayload.course.generatedExams[1].id
+    );
   }
 );
 

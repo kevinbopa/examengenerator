@@ -25,6 +25,7 @@ export function createCourse(input) {
     ),
     ingestionSummary: normalizeIngestionSummary(input?.ingestionSummary),
     pedagogicalIndex: normalizePedagogicalIndex(input?.pedagogicalIndex),
+    generatedExams: normalizeGeneratedExams(input?.generatedExams),
     createdAt,
     updatedAt
   };
@@ -193,6 +194,23 @@ function emptyPedagogicalIndex() {
     styleSignals: [],
     warnings: []
   };
+}
+
+function normalizeGeneratedExams(entries) {
+  return Array.isArray(entries)
+    ? entries
+        .map((entry, index) => ({
+          id: optionalString(entry?.id) || slugify(`generated-exam-${index + 1}`),
+          title: optionalString(entry?.title) || "Examen genere",
+          generatedAt: optionalString(entry?.generatedAt) || new Date().toISOString(),
+          sourceMode: optionalString(entry?.sourceMode) || "fallback",
+          questionCount: Number(entry?.questionCount) || 0,
+          sectionCount: Number(entry?.sectionCount) || 0,
+          durationMinutes: Number(entry?.durationMinutes) || 0,
+          exam: entry?.exam && typeof entry.exam === "object" ? entry.exam : null
+        }))
+        .filter((entry) => entry.exam)
+    : [];
 }
 
 function isoTimestamp(value) {

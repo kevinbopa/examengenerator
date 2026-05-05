@@ -1,10 +1,10 @@
 const navItems = [
-  { label: "Accueil", active: true, icon: "⌂" },
-  { label: "Mes examens", icon: "▣" },
-  { label: "Statistiques", icon: "▥" },
-  { label: "Historique", icon: "◷" },
-  { label: "Favoris", icon: "♡" },
-  { label: "Parametres", icon: "⚙" }
+  { label: "Accueil", active: true, icon: "AC" },
+  { label: "Examens", icon: "EX" },
+  { label: "Statistiques", icon: "ST" },
+  { label: "Historique", icon: "HI" },
+  { label: "Sources", icon: "SO" },
+  { label: "Parametres", icon: "PA" }
 ];
 
 export default function AppSidebar({ aiConfigured }) {
@@ -16,8 +16,8 @@ export default function AppSidebar({ aiConfigured }) {
           <span className="brand-orb brand-orb-small" />
         </div>
         <div>
-          <h2>AgiliteXP</h2>
-          <p>Examen de revision</p>
+          <h2>ExamenIA</h2>
+          <p>Revision universitaire evolutive</p>
         </div>
       </div>
 
@@ -51,10 +51,11 @@ export default function AppSidebar({ aiConfigured }) {
         <article className="ai-sidebar-card">
           <h3>Mode IA {aiConfigured ? "actif" : "pret"}</h3>
           <p>
-            Des questions generees intelligemment a partir du chapitre et de la banque actuelle.
+            Des examens generes a partir des sources du cours, puis conserves dans une vraie
+            bibliotheque pour comparer plusieurs simulations.
           </p>
           <button type="button" className="primary-button compact-button">
-            En savoir plus
+            Vue d ensemble
           </button>
         </article>
       </div>

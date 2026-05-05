@@ -22,3 +22,6 @@ npm-debug.log*
 graphify-out/manifest.json
 graphify-out/cost.json
 graphify-out/cache/
+
+data/courses/catalog.local.json
+data/courses/uploads/

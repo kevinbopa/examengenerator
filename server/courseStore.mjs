@@ -13,7 +13,7 @@ import {
 export function getCourseCatalogFile(projectRoot) {
   return (
     process.env.COURSE_CATALOG_FILE ||
-    path.join(projectRoot, "data", "courses", "catalog.json")
+    path.join(projectRoot, "data", "courses", "catalog.local.json")
   );
 }
 
@@ -35,7 +35,7 @@ export async function loadCourseCatalog(projectRoot) {
       throw error;
     }
 
-    return createSeedCourseCatalog();
+    return loadSeedCourseCatalog(projectRoot);
   }
 }
 
@@ -245,6 +245,45 @@ export async function indexCoursePedagogically(projectRoot, courseId) {
   };
 }
 
+export async function appendGeneratedExam(projectRoot, courseId, exam, sourceMode) {
+  const catalog = await loadCourseCatalog(projectRoot);
+  const targetCourse = catalog.courses.find((course) => course.id === courseId);
+
+  if (!targetCourse) {
+    throw new Error("Course introuvable.");
+  }
+
+  const generatedExam = {
+    id: slugify(`generated-exam-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`),
+    title: exam.title,
+    generatedAt: exam.generatedAt || new Date().toISOString(),
+    sourceMode,
+    questionCount: exam.sections?.reduce((total, section) => total + (section.questions?.length || 0), 0) || 0,
+    sectionCount: exam.sections?.length || 0,
+    durationMinutes: exam.durationMinutes || 0,
+    exam
+  };
+
+  const updatedCourse = createCourse({
+    ...targetCourse,
+    generatedExams: [...(targetCourse.generatedExams || []), generatedExam],
+    updatedAt: new Date().toISOString()
+  });
+
+  const nextCatalog = createCourseCatalog({
+    courses: catalog.courses.map((course) => (course.id === courseId ? updatedCourse : course)),
+    activeCourseId: catalog.activeCourseId
+  });
+
+  await saveCourseCatalog(projectRoot, nextCatalog);
+
+  return {
+    course: updatedCourse,
+    generatedExam,
+    catalog: nextCatalog
+  };
+}
+
 export function getActiveCourse(catalog, requestedCourseId) {
   return resolveActiveCourse(catalog, requestedCourseId);
 }
@@ -410,4 +449,19 @@ function createSeedCourseCatalog() {
     courses: [course],
     activeCourseId: course.id
   });
+}
+
+async function loadSeedCourseCatalog(projectRoot) {
+  const seedCatalogFile = path.join(projectRoot, "data", "courses", "catalog.json");
+
+  try {
+    const raw = await fs.readFile(seedCatalogFile, "utf8");
+    return createCourseCatalog(JSON.parse(raw));
+  } catch (error) {
+    if (error?.code !== "ENOENT") {
+      throw error;
+    }
+
+    return createSeedCourseCatalog();
+  }
 }

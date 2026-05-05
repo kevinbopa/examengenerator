@@ -12,6 +12,7 @@ import {
 import {
   addCourseDocument,
   addPastExam,
+  appendGeneratedExam,
   createLocalCourse,
   getActiveCourse,
   ingestCourse,
@@ -149,8 +150,11 @@ app.post("/api/generate-exam", async (request, response) => {
   const activeCourse = prepareCourseForGeneration(getActiveCourse(catalog, request.body?.courseId));
 
   if (!process.env.OPENAI_API_KEY) {
+    const fallbackExam = buildFallbackExam(activeCourse);
+    const saved = await appendGeneratedExam(projectRoot, activeCourse.id, fallbackExam, "fallback");
     response.json({
-      exam: buildFallbackExam(activeCourse),
+      exam: fallbackExam,
+      course: saved.course,
       mode: "fallback",
       reason: "OPENAI_API_KEY manquante"
     });
@@ -159,14 +163,19 @@ app.post("/api/generate-exam", async (request, response) => {
 
   try {
     const generatedExam = await generateExamWithAI(activeCourse);
+    const saved = await appendGeneratedExam(projectRoot, activeCourse.id, generatedExam, "ai");
     response.json({
       exam: generatedExam,
+      course: saved.course,
       mode: "ai"
     });
   } catch (error) {
     console.error("AI exam generation failed:", error);
+    const fallbackExam = buildFallbackExam(activeCourse);
+    const saved = await appendGeneratedExam(projectRoot, activeCourse.id, fallbackExam, "fallback");
     response.json({
-      exam: buildFallbackExam(activeCourse),
+      exam: fallbackExam,
+      course: saved.course,
       mode: "fallback",
       reason: "generation IA indisponible"
     });

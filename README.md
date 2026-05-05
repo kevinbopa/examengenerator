@@ -25,6 +25,7 @@ Le projet contient deja :
 - un pipeline d'ingestion MVP avec nettoyage, segmentation et resume par cours;
 - un index pedagogique de cours avec concepts, themes et signaux de style;
 - une generation source-driven capable de produire un premier examen d'exemple a partir d'un cours televerse;
+- une bibliotheque d'examens generes conservant plusieurs simulations par cours;
 - une interface de simulation d'examen;
 - un assistant de correction linguistique;
 - une base de questions locales et une generation dynamique d'examens;
@@ -117,6 +118,16 @@ Le MVP sait maintenant produire un examen d exemple a partir du cours actif impo
 En pratique :
 - si l IA est disponible, les prompts utilisent le cours actif, les anciens examens et l index pedagogique;
 - si l IA n est pas disponible, un fallback local genere quand meme un examen contextualise a partir des sources importees.
+- chaque generation est conservee pour que plusieurs examens puissent coexister sur le meme cours.
+
+## Persistance locale
+
+Les donnees runtime du MVP ne polluent plus le seed versionne du projet.
+
+En pratique :
+- le seed versionne reste dans `data/courses/catalog.json`;
+- l etat local evolutif du dashboard est ecrit dans `data/courses/catalog.local.json`;
+- les fichiers televerses sont stockes dans `data/courses/uploads/`.
 
 ## Tests
 

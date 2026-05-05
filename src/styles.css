@@ -177,6 +177,12 @@ textarea {
   align-items: center;
   justify-content: center;
   width: 22px;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 8px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  background: rgba(91, 92, 240, 0.08);
   color: inherit;
 }
 
@@ -312,6 +318,16 @@ textarea {
 .results-layout {
   display: grid;
   gap: 18px;
+}
+
+.landing-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.landing-grid-wide {
+  align-items: start;
 }
 
 .hero-card,
@@ -750,6 +766,11 @@ textarea {
   margin-top: 18px;
 }
 
+.exam-library-card,
+.asset-overview-card {
+  height: 100%;
+}
+
 .course-upload-item {
   display: flex;
   justify-content: space-between;
@@ -848,6 +869,90 @@ textarea {
 .pedagogical-empty {
   color: var(--muted);
   line-height: 1.55;
+}
+
+.asset-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.asset-overview-panel {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(247, 249, 255, 0.9);
+  border: 1px solid rgba(105, 120, 172, 0.08);
+}
+
+.asset-overview-head,
+.exam-library-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
+
+.asset-overview-list,
+.exam-library-list {
+  display: grid;
+  gap: 10px;
+}
+
+.asset-overview-item,
+.exam-library-item,
+.exam-library-empty {
+  display: grid;
+  gap: 6px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(105, 120, 172, 0.08);
+}
+
+.exam-library-item {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+}
+
+.exam-library-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.exam-library-copy span,
+.exam-library-copy small,
+.asset-overview-item span {
+  color: var(--muted);
+}
+
+.compact-secondary {
+  padding: 12px 16px;
+  border-radius: 14px;
+}
+
+.exam-mode-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.exam-mode-pill.ai {
+  color: #18785f;
+  background: rgba(75, 195, 135, 0.14);
+}
+
+.exam-mode-pill.fallback {
+  color: var(--primary);
+  background: rgba(91, 92, 240, 0.12);
 }
 
 .question-preview-top {
@@ -1645,7 +1750,8 @@ textarea {
   .results-grid,
   .performance-grid,
   .professor-feedback-grid,
-  .pedagogical-index-grid {
+  .pedagogical-index-grid,
+  .landing-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -1662,7 +1768,9 @@ textarea {
   .performance-grid,
   .professor-feedback-grid,
   .ingestion-stats-grid,
-  .pedagogical-index-grid {
+  .pedagogical-index-grid,
+  .asset-overview-grid,
+  .landing-grid {
     grid-template-columns: 1fr;
   }
 

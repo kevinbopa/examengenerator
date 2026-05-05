@@ -49,6 +49,35 @@ test("createCourse normalizes a reusable generic course model", () => {
   assert.deepEqual(course.pedagogicalIndex.concepts, []);
   assert.deepEqual(course.pedagogicalIndex.themes, []);
   assert.deepEqual(course.pedagogicalIndex.styleSignals, []);
+  assert.deepEqual(course.generatedExams, []);
+});
+
+test("createCourse keeps a normalized generated exam library", () => {
+  const course = createCourse({
+    title: "Processus logiciel",
+    courseCode: "GLO2003",
+    generatedExams: [
+      {
+        id: "exam-1",
+        title: "Examen d'exemple 1",
+        generatedAt: "2026-05-04T10:00:00.000Z",
+        sourceMode: "fallback",
+        questionCount: 16,
+        sectionCount: 4,
+        durationMinutes: 70,
+        exam: {
+          title: "Examen d'exemple 1",
+          sections: [{ id: "qcm", questions: [{ id: "qcm-1" }] }]
+        }
+      }
+    ]
+  });
+
+  assert.equal(course.generatedExams.length, 1);
+  assert.equal(course.generatedExams[0].id, "exam-1");
+  assert.equal(course.generatedExams[0].sourceMode, "fallback");
+  assert.equal(course.generatedExams[0].questionCount, 16);
+  assert.equal(course.generatedExams[0].exam.title, "Examen d'exemple 1");
 });
 
 test("createCourseCatalog keeps an explicit active course when it exists", () => {
