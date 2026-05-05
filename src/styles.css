@@ -631,6 +631,129 @@ textarea {
   padding: 18px 22px 20px;
 }
 
+.course-upload-card {
+  padding: 22px;
+  border-radius: 24px;
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  box-shadow: var(--shadow-card);
+}
+
+.course-upload-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+.course-upload-head h3 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.course-upload-copy {
+  margin: 10px 0 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.course-upload-summary {
+  min-width: 110px;
+  display: grid;
+  gap: 4px;
+  padding: 16px;
+  text-align: center;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(91, 92, 240, 0.08), rgba(255, 255, 255, 0.98));
+}
+
+.course-upload-summary strong {
+  font-size: 1.8rem;
+}
+
+.course-upload-summary span {
+  color: var(--muted);
+}
+
+.course-upload-form {
+  display: grid;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.course-upload-field {
+  display: grid;
+  gap: 8px;
+  color: var(--text);
+  font-weight: 700;
+}
+
+.course-upload-field input[type="file"] {
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px dashed rgba(91, 92, 240, 0.24);
+  background: rgba(247, 249, 255, 0.92);
+}
+
+.course-upload-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+}
+
+.course-upload-meta {
+  display: grid;
+  gap: 4px;
+}
+
+.course-upload-meta span {
+  color: var(--muted);
+}
+
+.course-upload-feedback {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  font-weight: 700;
+}
+
+.course-upload-feedback.success {
+  color: #238554;
+  background: rgba(75, 195, 135, 0.12);
+}
+
+.course-upload-feedback.error {
+  color: #b63d61;
+  background: rgba(217, 83, 120, 0.1);
+}
+
+.course-upload-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.course-upload-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(247, 249, 255, 0.86);
+  border: 1px solid rgba(105, 120, 172, 0.08);
+}
+
+.course-upload-item strong,
+.course-upload-item span {
+  display: block;
+}
+
+.course-upload-item span {
+  margin-top: 4px;
+  color: var(--muted);
+}
+
 .question-preview-top {
   display: flex;
   justify-content: space-between;
@@ -1453,6 +1576,7 @@ textarea {
 
   .hero-actions,
   .preview-actions,
+  .course-upload-actions,
   .exam-cta-group,
   .results-banner {
     flex-direction: column;

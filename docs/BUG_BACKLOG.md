@@ -10,4 +10,4 @@ Chaque bug detecte doit etre :
 
 ## Etat actuel
 
-- aucun bug non trace a ce stade
+- `BUG-001` `P1` - Les fichiers de cours televerses pour un nouveau cours sont bien stockes localement, mais le pipeline de generation ne relit pas encore ces chemins depuis le repertoire de stockage dedie. Impact : la future generation a partir d'un cours utilisateur risque d'echouer tant que la resolution de chemin n'est pas branchee sur le storage des uploads.

@@ -19,6 +19,7 @@ Le projet contient deja :
 - une application React + Vite;
 - un serveur Express pour la generation et la correction IA;
 - un modele de cours generique avec catalogue local seed;
+- un upload local de documents de cours pour le cours actif;
 - une interface de simulation d'examen;
 - un assistant de correction linguistique;
 - une base de questions locales et une generation dynamique d'examens;
@@ -63,6 +64,16 @@ npm run dev
 4. Ouvrir :
 
 [http://localhost:5173](http://localhost:5173)
+
+## Upload de documents de cours
+
+Le MVP permet deja de televerser des documents de cours pour le cours actif depuis l'interface d'accueil.
+
+Formats actuellement acceptes :
+- `md`
+- `txt`
+- `pdf`
+- `docx`
 
 ## Tests
 

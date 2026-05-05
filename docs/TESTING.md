@@ -21,6 +21,9 @@ Ce choix permet :
 
 Les tests backend couvrent d'abord les comportements de secours et de validation :
 - `GET /api/health`
+- `GET /api/courses`
+- `POST /api/courses`
+- `POST /api/courses/:courseId/documents`
 - `POST /api/generate-exam`
 - `POST /api/evaluate-exam`
 - `POST /api/generate-corrected-copy`
@@ -50,6 +53,11 @@ La suite couvre aussi le nouveau modele de cours :
 - creation et normalisation d'un `Course`;
 - gestion d'un catalogue local avec cours actif;
 - exposition backend des routes `GET /api/courses` et `POST /api/courses`.
+
+La suite couvre aussi l'upload de documents de cours :
+- validation des formats supportes;
+- persistence locale d'un document lie a un cours;
+- mise a jour du catalogue apres televersement.
 
 ## Pourquoi le mode fallback en premier
 

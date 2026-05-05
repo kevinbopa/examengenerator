@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   createCourse,
   createCourseCatalog,
+  isSupportedCourseDocumentFormat,
   resolveActiveCourse
 } from "../src/utils/courseModel.js";
 
@@ -93,4 +94,12 @@ test("createCourse rejects a course without title or course code", () => {
       }),
     /title/i
   );
+});
+
+test("isSupportedCourseDocumentFormat accepts the MVP course document formats", () => {
+  assert.equal(isSupportedCourseDocumentFormat("md"), true);
+  assert.equal(isSupportedCourseDocumentFormat("txt"), true);
+  assert.equal(isSupportedCourseDocumentFormat("pdf"), true);
+  assert.equal(isSupportedCourseDocumentFormat("docx"), true);
+  assert.equal(isSupportedCourseDocumentFormat("png"), false);
 });

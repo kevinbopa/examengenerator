@@ -68,6 +68,10 @@ Critere d'acceptation :
 - les erreurs de format sont gerees proprement;
 - les parcours critiques sont testes.
 
+Statut :
+- terminee
+- livree avec endpoint `POST /api/courses/:courseId/documents`, stockage local MVP, validation des formats `md`, `txt`, `pdf`, `docx` et interface de televersement sur la landing
+
 ### Issue 8 - Ajouter l'upload des anciens examens
 
 En tant qu'etudiant,
@@ -176,11 +180,10 @@ Statut :
 
 ## Ordre recommande
 
-1. Issue 7 - Upload des documents de cours
-2. Issue 8 - Upload des anciens examens
-3. Issue 9 - Pipeline d'ingestion MVP
-4. Issue 10 - Index pedagogique
-5. Issue 11 - Generation a partir des sources
+1. Issue 8 - Upload des anciens examens
+2. Issue 9 - Pipeline d'ingestion MVP
+3. Issue 10 - Index pedagogique
+4. Issue 11 - Generation a partir des sources
 
 ## Definition of Done du sprint
 

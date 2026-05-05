@@ -6,6 +6,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import OpenAI from "openai";
 import { examBlueprint, flattenQuestions } from "../src/data/examData.js";
 import {
+  addCourseDocument,
   createLocalCourse,
   getActiveCourse,
   loadCourseCatalog
@@ -59,6 +60,26 @@ app.post("/api/courses", async (request, response) => {
   } catch (error) {
     response.status(400).json({
       error: error.message || "Course invalide."
+    });
+  }
+});
+
+app.post("/api/courses/:courseId/documents", async (request, response) => {
+  try {
+    const created = await addCourseDocument(projectRoot, request.params.courseId, {
+      fileName: request.body?.fileName,
+      mimeType: request.body?.mimeType,
+      contentBase64: request.body?.contentBase64
+    });
+
+    response.status(201).json({
+      course: created.course,
+      document: created.document,
+      activeCourseId: created.catalog.activeCourseId
+    });
+  } catch (error) {
+    response.status(400).json({
+      error: error.message || "Document invalide."
     });
   }
 });

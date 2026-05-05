@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import AppSidebar from "./components/AppSidebar";
+import CourseDocumentUploadCard from "./components/CourseDocumentUploadCard";
 import Hero from "./components/Hero";
 import ExamWorkspace from "./components/ExamWorkspace";
 import ResultsView from "./components/ResultsView";
@@ -111,6 +112,34 @@ export default function App() {
     setIsGenerating(false);
   }
 
+  async function handleUploadCourseDocument(file) {
+    if (!activeCourse) {
+      throw new Error("Aucun cours actif disponible.");
+    }
+
+    const contentBase64 = await fileToBase64(file);
+    const response = await fetch(`/api/courses/${activeCourse.id}/documents`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        fileName: file.name,
+        mimeType: file.type,
+        contentBase64
+      })
+    });
+
+    const payload = await response.json();
+
+    if (!response.ok) {
+      throw new Error(payload.error || "Le televersement a echoue.");
+    }
+
+    setActiveCourse(payload.course);
+    return payload.course;
+  }
+
   async function finishExam(finalAnswers = answersById, finalExam = activeExam) {
     setIsEvaluating(true);
     setPhase("evaluating");
@@ -192,14 +221,20 @@ export default function App() {
 
         <section className="dashboard-main">
           {phase === "landing" ? (
-            <Hero
-              exam={activeExam}
-              activeCourse={activeCourse}
-              questions={questions}
-              onStart={startExam}
-              aiConfigured={aiConfigured}
-              isGenerating={isGenerating}
-            />
+            <>
+              <Hero
+                exam={activeExam}
+                activeCourse={activeCourse}
+                questions={questions}
+                onStart={startExam}
+                aiConfigured={aiConfigured}
+                isGenerating={isGenerating}
+              />
+              <CourseDocumentUploadCard
+                activeCourse={activeCourse}
+                onUploadDocument={handleUploadCourseDocument}
+              />
+            </>
           ) : null}
 
           {phase === "exam" ? (
@@ -262,4 +297,16 @@ export default function App() {
       </main>
     </div>
   );
+}
+
+async function fileToBase64(file) {
+  const buffer = await file.arrayBuffer();
+  let binary = "";
+  const bytes = new Uint8Array(buffer);
+
+  for (const byte of bytes) {
+    binary += String.fromCharCode(byte);
+  }
+
+  return window.btoa(binary);
 }

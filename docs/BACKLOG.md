@@ -18,7 +18,7 @@
 ## Epic 2 - Gestion des cours et des sources
 
 - [x] Creer un modele de cours generique
-- [ ] Permettre l'upload de documents de cours
+- [x] Permettre l'upload de documents de cours
 - [ ] Permettre l'upload d'anciens examens
 - [ ] Definir un stockage local MVP pour les sources
 - [ ] Afficher l'etat d'ingestion d'un cours
@@ -80,7 +80,7 @@
 ## Sprint 2 MVP propose
 
 - [x] Creer un modele de cours generique
-- [ ] Ajouter l'upload des documents de cours
+- [x] Ajouter l'upload des documents de cours
 - [ ] Ajouter l'upload des anciens examens
 - [ ] Construire le pipeline d'ingestion MVP
 - [ ] Generer un examen a partir des sources televersees

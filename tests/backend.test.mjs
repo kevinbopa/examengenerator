@@ -7,6 +7,7 @@ import { after, before, beforeEach, test } from "node:test";
 process.env.EXAM_SERVER_DISABLE_AUTOSTART = "1";
 process.env.OPENAI_API_KEY = "";
 process.env.COURSE_CATALOG_FILE = buildCatalogFile("default");
+process.env.COURSE_STORAGE_DIR = buildStorageDir("default");
 
 const [{ app }, { examBlueprint, flattenQuestions }] = await Promise.all([
   import("../server/index.mjs"),
@@ -28,8 +29,11 @@ before(async () => {
 });
 
 beforeEach(async (context) => {
-  process.env.COURSE_CATALOG_FILE = buildCatalogFile(slugify(context.name));
+  const testSlug = slugify(context.name);
+  process.env.COURSE_CATALOG_FILE = buildCatalogFile(testSlug);
+  process.env.COURSE_STORAGE_DIR = buildStorageDir(testSlug);
   await fs.rm(process.env.COURSE_CATALOG_FILE, { force: true });
+  await fs.rm(process.env.COURSE_STORAGE_DIR, { recursive: true, force: true });
 });
 
 after(async () => {
@@ -48,6 +52,7 @@ after(async () => {
   });
 
   await fs.rm(process.env.COURSE_CATALOG_FILE, { force: true });
+  await fs.rm(process.env.COURSE_STORAGE_DIR, { recursive: true, force: true });
 });
 
 test("GET /api/health exposes fallback-ready backend state", { concurrency: false }, async () => {
@@ -95,6 +100,64 @@ test("POST /api/courses creates and persists a new local course", { concurrency:
   assert.equal(catalogPayload.activeCourseId, "glo4001");
   assert.ok(catalogPayload.courses.some((course) => course.id === "glo4001"));
 });
+
+test(
+  "POST /api/courses/:courseId/documents uploads and persists a valid course document",
+  { concurrency: false },
+  async () => {
+    const createResponse = await postJson("/api/courses", {
+      title: "Architecture logicielle",
+      courseCode: "GLO4001",
+      description: "Cours de conception et d'architecture"
+    });
+    const created = await createResponse.json();
+
+    const uploadResponse = await postJson(`/api/courses/${created.course.id}/documents`, {
+      fileName: "notes-cours.md",
+      mimeType: "text/markdown",
+      contentBase64: Buffer.from("# Notes\nContenu du cours", "utf8").toString("base64")
+    });
+
+    assert.equal(uploadResponse.status, 201);
+    const payload = await uploadResponse.json();
+
+    assert.equal(payload.course.id, "glo4001");
+    assert.equal(payload.document.kind, "courseDocument");
+    assert.equal(payload.document.format, "md");
+    assert.equal(payload.document.status, "uploaded");
+
+    const storedPath = path.join(process.env.COURSE_STORAGE_DIR, payload.document.filePath);
+    const storedContent = await fs.readFile(storedPath, "utf8");
+    assert.match(storedContent, /Contenu du cours/);
+
+    const catalogResponse = await fetch(`${baseUrl}/api/courses`);
+    const catalogPayload = await catalogResponse.json();
+    const storedCourse = catalogPayload.courses.find((course) => course.id === "glo4001");
+    assert.ok(storedCourse.sources.some((source) => source.id === payload.document.id));
+  }
+);
+
+test(
+  "POST /api/courses/:courseId/documents rejects an unsupported course document format",
+  { concurrency: false },
+  async () => {
+    const createResponse = await postJson("/api/courses", {
+      title: "Architecture logicielle",
+      courseCode: "GLO4001"
+    });
+    const created = await createResponse.json();
+
+    const uploadResponse = await postJson(`/api/courses/${created.course.id}/documents`, {
+      fileName: "diagramme.png",
+      mimeType: "image/png",
+      contentBase64: Buffer.from("not an image", "utf8").toString("base64")
+    });
+
+    assert.equal(uploadResponse.status, 400);
+    const payload = await uploadResponse.json();
+    assert.match(payload.error, /format/i);
+  }
+);
 
 test("POST /api/generate-exam returns the fallback exam when AI is disabled", { concurrency: false }, async () => {
   const response = await postJson("/api/generate-exam", {
@@ -197,6 +260,10 @@ async function postJson(route, body) {
 
 function buildCatalogFile(label) {
   return path.join(os.tmpdir(), `examengenerator-course-catalog-${process.pid}-${label}.json`);
+}
+
+function buildStorageDir(label) {
+  return path.join(os.tmpdir(), `examengenerator-course-storage-${process.pid}-${label}`);
 }
 
 function slugify(value) {
