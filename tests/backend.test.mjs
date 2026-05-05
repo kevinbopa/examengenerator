@@ -215,13 +215,36 @@ test(
       mimeType: "application/pdf",
       contentBase64: Buffer.from("fake pdf content", "utf8").toString("base64"),
       session: "",
-      year: null,
-      sourceName: ""
+      year: null
     });
 
     assert.equal(uploadResponse.status, 400);
     const payload = await uploadResponse.json();
-    assert.match(payload.error, /session|year|sourceName/i);
+    assert.match(payload.error, /session|year/i);
+  }
+);
+
+test(
+  "POST /api/courses/:courseId/past-exams derives a source name from the file name when omitted",
+  { concurrency: false },
+  async () => {
+    const createResponse = await postJson("/api/courses", {
+      title: "Architecture logicielle",
+      courseCode: "GLO4001"
+    });
+    const created = await createResponse.json();
+
+    const uploadResponse = await postJson(`/api/courses/${created.course.id}/past-exams`, {
+      fileName: "final-automne-2024.pdf",
+      mimeType: "application/pdf",
+      contentBase64: Buffer.from("fake pdf content", "utf8").toString("base64"),
+      session: "Automne",
+      year: 2024
+    });
+
+    assert.equal(uploadResponse.status, 201);
+    const payload = await uploadResponse.json();
+    assert.equal(payload.pastExam.title, "final automne 2024");
   }
 );
 
@@ -443,6 +466,53 @@ test(
       secondPayload.course.generatedExams[0].id,
       secondPayload.course.generatedExams[1].id
     );
+  }
+);
+
+test(
+  "POST /api/generate-exam can generate several exams in one request",
+  { concurrency: false },
+  async () => {
+    const createResponse = await postJson("/api/courses", {
+      title: "Architecture logicielle",
+      courseCode: "GLO4001",
+      description: "Cours de conception et d'architecture"
+    });
+    const created = await createResponse.json();
+
+    await postJson(`/api/courses/${created.course.id}/documents`, {
+      fileName: "notes-cours.md",
+      mimeType: "text/markdown",
+      contentBase64: Buffer.from(
+        "# Styles architecturaux\nLes styles architecturaux definissent l organisation globale du systeme.\n\n# Refactoring\nLe refactoring aide a faire evoluer la structure.",
+        "utf8"
+      ).toString("base64")
+    });
+
+    await postJson(`/api/courses/${created.course.id}/past-exams`, {
+      fileName: "intra-h2025.txt",
+      mimeType: "text/plain",
+      contentBase64: Buffer.from(
+        "Expliquez un style architectural. Justifiez votre choix. Analysez le code propose.",
+        "utf8"
+      ).toString("base64"),
+      session: "Hiver",
+      year: 2025,
+      sourceName: "Intra Hiver 2025"
+    });
+
+    const response = await postJson("/api/generate-exam", {
+      courseId: created.course.id,
+      count: 3
+    });
+
+    assert.equal(response.status, 200);
+    const payload = await response.json();
+
+    assert.equal(payload.exams.length, 3);
+    assert.equal(payload.course.generatedExams.length, 3);
+    assert.equal(payload.exam.courseId, created.course.id);
+    assert.equal(new Set(payload.course.generatedExams.map((exam) => exam.id)).size, 3);
   }
 );
 

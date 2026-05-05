@@ -121,7 +121,7 @@ export async function addPastExam(projectRoot, courseId, input) {
   const fileName = requiredString(input?.fileName, "fileName");
   const contentBase64 = requiredString(input?.contentBase64, "contentBase64");
   const session = requiredString(input?.session, "session");
-  const sourceName = requiredString(input?.sourceName, "sourceName");
+  const sourceName = optionalString(input?.sourceName) || readableTitleFromFileName(fileName);
   const year = normalizeYear(input?.year);
   const format = normalizeFileFormat(fileName);
 
@@ -388,6 +388,10 @@ function requiredString(value, fieldName) {
     throw new Error(`Invalid ${fieldName}.`);
   }
   return normalized;
+}
+
+function optionalString(value) {
+  return typeof value === "string" ? value.trim() : "";
 }
 
 function normalizeYear(value) {

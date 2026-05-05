@@ -2,8 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import AppSidebar from "./components/AppSidebar";
 import CourseAssetOverviewCard from "./components/CourseAssetOverviewCard";
 import CourseDocumentUploadCard from "./components/CourseDocumentUploadCard";
-import CourseIngestionCard from "./components/CourseIngestionCard";
-import CoursePedagogicalIndexCard from "./components/CoursePedagogicalIndexCard";
+import ExamGenerationControlCard from "./components/ExamGenerationControlCard";
 import GeneratedExamLibraryCard from "./components/GeneratedExamLibraryCard";
 import Hero from "./components/Hero";
 import ExamWorkspace from "./components/ExamWorkspace";
@@ -79,11 +78,19 @@ export default function App() {
   }
 
   async function startExam() {
-    setIsGenerating(true);
-    setPhase("landing");
+    return generateExams({
+      count: 1,
+      openAfterGenerate: true
+    });
+  }
 
-    let nextExam = structuredClone(examBlueprint);
-    let nextMode = "fallback";
+  async function generateExams({ count = 1, openAfterGenerate = count === 1 } = {}) {
+    setIsGenerating(true);
+
+    let generatedExam = null;
+    let generatedMode = "fallback";
+    let generatedCourse = activeCourse;
+    let generatedExams = [];
 
     try {
       const response = await fetch("/api/generate-exam", {
@@ -93,31 +100,46 @@ export default function App() {
         },
         body: JSON.stringify({
           chapterId: examBlueprint.chapter,
-          courseId: activeCourse?.id
+          courseId: activeCourse?.id,
+          count
         })
       });
       const payload = await response.json();
-      if (payload?.exam) {
-        nextExam = payload.exam;
-        nextMode = payload.mode || "fallback";
-        if (payload.course) {
-          setActiveCourse(payload.course);
-        }
-      }
+      generatedExam = payload?.exam || null;
+      generatedMode = payload?.mode || "fallback";
+      generatedCourse = payload?.course || activeCourse;
+      generatedExams = payload?.exams || (payload?.exam ? [payload.exam] : []);
     } catch {
-      nextExam = structuredClone(examBlueprint);
-      nextMode = "fallback";
+      generatedExam = structuredClone(examBlueprint);
+      generatedMode = "fallback";
+      generatedExams = [generatedExam];
     }
 
-    setActiveExam(nextExam);
-    setGenerationMode(nextMode);
-    setAnswersById({});
-    setCurrentIndex(0);
-    setTimeRemaining(nextExam.durationMinutes * 60);
-    setResult(null);
-    setCorrectedCopy(null);
-    setPhase("exam");
+    if (generatedCourse) {
+      setActiveCourse(generatedCourse);
+    }
+
+    if (openAfterGenerate && generatedExam) {
+      setActiveExam(generatedExam);
+      setGenerationMode(generatedMode);
+      setAnswersById({});
+      setCurrentIndex(0);
+      setTimeRemaining(generatedExam.durationMinutes * 60);
+      setResult(null);
+      setCorrectedCopy(null);
+      setPhase("exam");
+    } else {
+      setPhase("landing");
+    }
+
     setIsGenerating(false);
+
+    return {
+      exam: generatedExam,
+      exams: generatedExams,
+      mode: generatedMode,
+      course: generatedCourse
+    };
   }
 
   function openGeneratedExam(examId) {
@@ -136,109 +158,74 @@ export default function App() {
     setPhase("exam");
   }
 
-  async function handleUploadCourseDocument(file) {
+  async function handleUploadCourseDocuments(files) {
     if (!activeCourse) {
       throw new Error("Aucun cours actif disponible.");
     }
 
-    const contentBase64 = await fileToBase64(file);
-    const response = await fetch(`/api/courses/${activeCourse.id}/documents`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        fileName: file.name,
-        mimeType: file.type,
-        contentBase64
-      })
-    });
+    let nextCourse = activeCourse;
 
-    const payload = await response.json();
+    for (const file of files) {
+      const contentBase64 = await fileToBase64(file);
+      const response = await fetch(`/api/courses/${nextCourse.id}/documents`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          fileName: file.name,
+          mimeType: file.type,
+          contentBase64
+        })
+      });
 
-    if (!response.ok) {
-      throw new Error(payload.error || "Le televersement a echoue.");
+      const payload = await response.json();
+
+      if (!response.ok) {
+        throw new Error(payload.error || "Le televersement a echoue.");
+      }
+
+      nextCourse = payload.course;
     }
 
-    setActiveCourse(payload.course);
-    return payload.course;
+    setActiveCourse(nextCourse);
+    return nextCourse;
   }
 
-  async function handleUploadPastExam({ file, session, year, sourceName }) {
+  async function handleUploadPastExams({ files, session, year }) {
     if (!activeCourse) {
       throw new Error("Aucun cours actif disponible.");
     }
 
-    const contentBase64 = await fileToBase64(file);
-    const response = await fetch(`/api/courses/${activeCourse.id}/past-exams`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        fileName: file.name,
-        mimeType: file.type,
-        contentBase64,
-        session,
-        year: Number.parseInt(year, 10),
-        sourceName
-      })
-    });
+    let nextCourse = activeCourse;
 
-    const payload = await response.json();
+    for (const file of files) {
+      const contentBase64 = await fileToBase64(file);
+      const response = await fetch(`/api/courses/${nextCourse.id}/past-exams`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          fileName: file.name,
+          mimeType: file.type,
+          contentBase64,
+          session,
+          year: Number.parseInt(year, 10)
+        })
+      });
 
-    if (!response.ok) {
-      throw new Error(payload.error || "Le televersement a echoue.");
+      const payload = await response.json();
+
+      if (!response.ok) {
+        throw new Error(payload.error || "Le televersement a echoue.");
+      }
+
+      nextCourse = payload.course;
     }
 
-    setActiveCourse(payload.course);
-    return payload.course;
-  }
-
-  async function handleIngestCourse() {
-    if (!activeCourse) {
-      throw new Error("Aucun cours actif disponible.");
-    }
-
-    const response = await fetch(`/api/courses/${activeCourse.id}/ingest`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({})
-    });
-
-    const payload = await response.json();
-
-    if (!response.ok) {
-      throw new Error(payload.error || "L ingestion a echoue.");
-    }
-
-    setActiveCourse(payload.course);
-    return payload.course;
-  }
-
-  async function handleBuildPedagogicalIndex() {
-    if (!activeCourse) {
-      throw new Error("Aucun cours actif disponible.");
-    }
-
-    const response = await fetch(`/api/courses/${activeCourse.id}/pedagogical-index`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({})
-    });
-
-    const payload = await response.json();
-
-    if (!response.ok) {
-      throw new Error(payload.error || "La construction de l index a echoue.");
-    }
-
-    setActiveCourse(payload.course);
-    return payload.course;
+    setActiveCourse(nextCourse);
+    return nextCourse;
   }
 
   async function finishExam(finalAnswers = answersById, finalExam = activeExam) {
@@ -326,40 +313,37 @@ export default function App() {
               <Hero
                 exam={activeExam}
                 activeCourse={activeCourse}
-                questions={questions}
                 onStart={startExam}
                 onOpenLastExam={openGeneratedExam}
                 aiConfigured={aiConfigured}
                 isGenerating={isGenerating}
               />
 
-              <section className="landing-grid">
-                <GeneratedExamLibraryCard
-                  activeCourse={activeCourse}
-                  onOpenGeneratedExam={openGeneratedExam}
-                  onGenerateNewExam={startExam}
-                  isGenerating={isGenerating}
-                />
-                <CourseAssetOverviewCard activeCourse={activeCourse} />
-                <CourseDocumentUploadCard
-                  activeCourse={activeCourse}
-                  onUploadDocument={handleUploadCourseDocument}
-                />
-                <PastExamUploadCard
-                  activeCourse={activeCourse}
-                  onUploadPastExam={handleUploadPastExam}
-                />
-              </section>
+              <section className="setup-grid">
+                <div className="setup-column setup-column-main">
+                  <CourseDocumentUploadCard
+                    activeCourse={activeCourse}
+                    onUploadDocuments={handleUploadCourseDocuments}
+                  />
+                  <PastExamUploadCard
+                    activeCourse={activeCourse}
+                    onUploadPastExams={handleUploadPastExams}
+                  />
+                  <ExamGenerationControlCard
+                    activeCourse={activeCourse}
+                    onGenerateExams={generateExams}
+                    onOpenGeneratedExam={openGeneratedExam}
+                    isGenerating={isGenerating}
+                  />
+                </div>
 
-              <section className="landing-grid landing-grid-wide">
-                <CourseIngestionCard
-                  activeCourse={activeCourse}
-                  onIngestCourse={handleIngestCourse}
-                />
-                <CoursePedagogicalIndexCard
-                  activeCourse={activeCourse}
-                  onBuildPedagogicalIndex={handleBuildPedagogicalIndex}
-                />
+                <div className="setup-column setup-column-side">
+                  <GeneratedExamLibraryCard
+                    activeCourse={activeCourse}
+                    onOpenGeneratedExam={openGeneratedExam}
+                  />
+                  <CourseAssetOverviewCard activeCourse={activeCourse} />
+                </div>
               </section>
             </>
           ) : null}

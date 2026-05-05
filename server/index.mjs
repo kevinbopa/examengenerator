@@ -147,14 +147,23 @@ app.post("/api/courses/:courseId/pedagogical-index", async (request, response) =
 
 app.post("/api/generate-exam", async (request, response) => {
   const catalog = await loadCourseCatalog(projectRoot);
-  const activeCourse = prepareCourseForGeneration(getActiveCourse(catalog, request.body?.courseId));
+  const requestedCount = normalizeRequestedExamCount(request.body?.count);
+  let activeCourse = prepareCourseForGeneration(getActiveCourse(catalog, request.body?.courseId));
+
+  activeCourse = await ensureCourseReadyForGeneration(activeCourse);
 
   if (!process.env.OPENAI_API_KEY) {
-    const fallbackExam = buildFallbackExam(activeCourse);
-    const saved = await appendGeneratedExam(projectRoot, activeCourse.id, fallbackExam, "fallback");
+    const fallbackBatch = await generateExamBatch({
+      course: activeCourse,
+      count: requestedCount,
+      sourceMode: "fallback",
+      buildExam: async () => buildFallbackExam(activeCourse)
+    });
+
     response.json({
-      exam: fallbackExam,
-      course: saved.course,
+      exam: fallbackBatch.exams[0],
+      exams: fallbackBatch.exams,
+      course: fallbackBatch.course,
       mode: "fallback",
       reason: "OPENAI_API_KEY manquante"
     });
@@ -162,20 +171,32 @@ app.post("/api/generate-exam", async (request, response) => {
   }
 
   try {
-    const generatedExam = await generateExamWithAI(activeCourse);
-    const saved = await appendGeneratedExam(projectRoot, activeCourse.id, generatedExam, "ai");
+    const aiBatch = await generateExamBatch({
+      course: activeCourse,
+      count: requestedCount,
+      sourceMode: "ai",
+      buildExam: async () => generateExamWithAI(activeCourse)
+    });
+
     response.json({
-      exam: generatedExam,
-      course: saved.course,
+      exam: aiBatch.exams[0],
+      exams: aiBatch.exams,
+      course: aiBatch.course,
       mode: "ai"
     });
   } catch (error) {
     console.error("AI exam generation failed:", error);
-    const fallbackExam = buildFallbackExam(activeCourse);
-    const saved = await appendGeneratedExam(projectRoot, activeCourse.id, fallbackExam, "fallback");
+    const fallbackBatch = await generateExamBatch({
+      course: activeCourse,
+      count: requestedCount,
+      sourceMode: "fallback",
+      buildExam: async () => buildFallbackExam(activeCourse)
+    });
+
     response.json({
-      exam: fallbackExam,
-      course: saved.course,
+      exam: fallbackBatch.exams[0],
+      exams: fallbackBatch.exams,
+      course: fallbackBatch.course,
       mode: "fallback",
       reason: "generation IA indisponible"
     });
@@ -592,6 +613,44 @@ function buildFallbackCorrectedCopy(exam, answersById) {
   });
 }
 
+async function ensureCourseReadyForGeneration(course) {
+  if (!course || !hasImportedCourseMaterial(course)) {
+    return course;
+  }
+
+  try {
+    const ingestionResult = await ingestCourse(projectRoot, course.id);
+    const indexedResult = await indexCoursePedagogically(projectRoot, course.id);
+
+    return prepareCourseForGeneration(indexedResult.course || ingestionResult.course || course);
+  } catch (error) {
+    console.error("Automatic course preparation failed:", error);
+    return course;
+  }
+}
+
+async function generateExamBatch({
+  course,
+  count,
+  sourceMode,
+  buildExam
+}) {
+  const exams = [];
+  let currentCourse = course;
+
+  for (let index = 0; index < count; index += 1) {
+    const exam = await buildExam(index);
+    const saved = await appendGeneratedExam(projectRoot, currentCourse.id, exam, sourceMode);
+    currentCourse = saved.course;
+    exams.push(exam);
+  }
+
+  return {
+    exams,
+    course: currentCourse
+  };
+}
+
 function seedBankForPrompt() {
   return examBlueprint.sections.map((section) => ({
     id: section.id,
@@ -773,6 +832,16 @@ function defaultSectionMinutes(sectionId) {
   if (sectionId === "semi") return 18;
   if (sectionId === "dev") return 24;
   return 16;
+}
+
+function normalizeRequestedExamCount(value) {
+  const parsed = Number.parseInt(String(value ?? "1"), 10);
+
+  if (!Number.isInteger(parsed) || parsed < 1) {
+    return 1;
+  }
+
+  return Math.min(parsed, 5);
 }
 
 function attachSuggestionPositions({

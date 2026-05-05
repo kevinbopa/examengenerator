@@ -11,9 +11,7 @@ function formatDate(value) {
 
 export default function GeneratedExamLibraryCard({
   activeCourse,
-  onOpenGeneratedExam,
-  onGenerateNewExam,
-  isGenerating
+  onOpenGeneratedExam
 }) {
   const generatedExams = activeCourse?.generatedExams || [];
   const reversedExams = [...generatedExams].reverse();
@@ -40,9 +38,6 @@ export default function GeneratedExamLibraryCard({
           <strong>{generatedExams.length > 0 ? "Historique disponible" : "Aucun examen genere pour l instant"}</strong>
           <span>La plateforme conserve chaque generation au lieu d ecraser la precedente.</span>
         </div>
-        <button className="primary-button" type="button" onClick={onGenerateNewExam} disabled={isGenerating}>
-          {isGenerating ? "Generation..." : "Generer un nouvel examen"}
-        </button>
       </div>
 
       <div className="exam-library-list">

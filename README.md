@@ -81,6 +81,8 @@ Formats actuellement acceptes :
 - `pdf`
 - `docx`
 
+Tu peux maintenant ajouter plusieurs documents en une seule action.
+
 ## Upload d'anciens examens
 
 Le MVP permet aussi de televerser des anciens examens pour le cours actif.
@@ -88,7 +90,8 @@ Le MVP permet aussi de televerser des anciens examens pour le cours actif.
 Metadonnees minimales actuellement requises :
 - `session`
 - `year`
-- `sourceName`
+
+Tu peux maintenant ajouter plusieurs anciens examens en une seule action. Le nom de chaque source est derive automatiquement du nom du fichier si aucun intitulé explicite n'est fourni.
 
 ## Ingestion des sources
 
@@ -119,6 +122,8 @@ En pratique :
 - si l IA est disponible, les prompts utilisent le cours actif, les anciens examens et l index pedagogique;
 - si l IA n est pas disponible, un fallback local genere quand meme un examen contextualise a partir des sources importees.
 - chaque generation est conservee pour que plusieurs examens puissent coexister sur le meme cours.
+- l interface permet maintenant de choisir combien d examens generer en une fois.
+- la preparation du cours est lancee automatiquement au moment de la generation pour eviter des etapes techniques visibles.
 
 ## Persistance locale
 

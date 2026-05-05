@@ -2,11 +2,10 @@ import { useState } from "react";
 
 const ACCEPTED_TYPES = ".md,.txt,.pdf,.docx";
 
-export default function PastExamUploadCard({ activeCourse, onUploadPastExam }) {
-  const [selectedFile, setSelectedFile] = useState(null);
+export default function PastExamUploadCard({ activeCourse, onUploadPastExams }) {
+  const [selectedFiles, setSelectedFiles] = useState([]);
   const [session, setSession] = useState("Hiver");
   const [year, setYear] = useState(String(new Date().getFullYear()));
-  const [sourceName, setSourceName] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [feedback, setFeedback] = useState(null);
 
@@ -15,7 +14,7 @@ export default function PastExamUploadCard({ activeCourse, onUploadPastExam }) {
   async function handleSubmit(event) {
     event.preventDefault();
 
-    if (!selectedFile || !activeCourse) {
+    if (selectedFiles.length === 0 || !activeCourse) {
       return;
     }
 
@@ -23,18 +22,18 @@ export default function PastExamUploadCard({ activeCourse, onUploadPastExam }) {
     setFeedback(null);
 
     try {
-      const uploadedCourse = await onUploadPastExam({
-        file: selectedFile,
+      const uploadedCourse = await onUploadPastExams({
+        files: selectedFiles,
         session,
-        year,
-        sourceName
+        year
       });
       setFeedback({
         type: "success",
-        message: `Ancien examen ajoute au cours ${uploadedCourse.title}.`
+        message: `${selectedFiles.length} ancien examen${
+          selectedFiles.length > 1 ? "s" : ""
+        } ajoute${selectedFiles.length > 1 ? "s" : ""} au cours ${uploadedCourse.title}.`
       });
-      setSelectedFile(null);
-      setSourceName("");
+      setSelectedFiles([]);
       event.currentTarget.reset();
     } catch (error) {
       setFeedback({
@@ -65,11 +64,12 @@ export default function PastExamUploadCard({ activeCourse, onUploadPastExam }) {
 
       <form className="course-upload-form" onSubmit={handleSubmit}>
         <label className="course-upload-field">
-          <span>Televerser un ancien examen</span>
+          <span>Joindre un ou plusieurs anciens examens</span>
           <input
             type="file"
             accept={ACCEPTED_TYPES}
-            onChange={(event) => setSelectedFile(event.target.files?.[0] || null)}
+            multiple
+            onChange={(event) => setSelectedFiles(Array.from(event.target.files || []))}
             disabled={!activeCourse || isUploading}
           />
         </label>
@@ -97,28 +97,23 @@ export default function PastExamUploadCard({ activeCourse, onUploadPastExam }) {
           </label>
         </div>
 
-        <label className="course-upload-field">
-          <span>Nom de la source</span>
-          <input
-            type="text"
-            placeholder="Ex. Intra Hiver 2025"
-            value={sourceName}
-            onChange={(event) => setSourceName(event.target.value)}
-            disabled={isUploading}
-          />
-        </label>
-
         <div className="course-upload-actions">
           <div className="course-upload-meta">
-            <strong>{selectedFile ? selectedFile.name : "Aucun fichier selectionne"}</strong>
-            <span>Metadonnees requises : session, annee, nom de source</span>
+            <strong>
+              {selectedFiles.length > 0
+                ? `${selectedFiles.length} fichier${selectedFiles.length > 1 ? "s" : ""} selectionne${
+                    selectedFiles.length > 1 ? "s" : ""
+                  }`
+                : "Aucun fichier selectionne"}
+            </strong>
+            <span>La session et l annee seront appliquees a tous les fichiers choisis.</span>
           </div>
           <button
             className="primary-button"
             type="submit"
-            disabled={!selectedFile || !activeCourse || !sourceName.trim() || !year.trim() || isUploading}
+            disabled={selectedFiles.length === 0 || !activeCourse || !year.trim() || isUploading}
           >
-            {isUploading ? "Televersement..." : "Ajouter l ancien examen"}
+            {isUploading ? "Televersement..." : "Ajouter les anciens examens"}
           </button>
         </div>
       </form>
