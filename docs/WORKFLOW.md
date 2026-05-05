@@ -13,7 +13,7 @@ Nous travaillons avec une approche agile inspiree du chapitre Agilite / XP :
 
 1. Une fonctionnalite = une user story claire.
 2. On decoupe le travail en petites tranches livrables.
-3. On privilegie TDD pour la logique metier et les API.
+3. TDD est la regle par defaut pour la logique metier, les helpers critiques et les API.
 4. Toute integration IA doit avoir :
    - un objectif clair,
    - un format de sortie structure,
@@ -39,6 +39,7 @@ afin de comprendre a la fois mes erreurs de fond et de langue.
 ## Definition of Done
 
 Une story est terminee si :
+- les tests ont ete ecrits ou ajustes avant la validation finale du comportement;
 - le comportement est implemente;
 - les cas essentiels sont testes;
 - le build passe;
@@ -60,4 +61,3 @@ Une story est terminee si :
 - `refactor:`
 - `test:`
 - `chore:`
-

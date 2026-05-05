@@ -16,6 +16,11 @@ Livrables :
 - copie corrigee;
 - base de pilotage Git/GitHub.
 
+Etat :
+- socle livre et fonctionnel;
+- Sprint 1 termine;
+- prochaine priorite : rendre le MVP plus robuste pedagogiquement et plus fiable en situation d'examen.
+
 ## Phase 2 - Fiabilite et profondeur pedagogique
 
 Objectif : rendre la correction plus robuste et plus juste.
@@ -51,8 +56,7 @@ Livrables :
 
 ## Priorites actuelles
 
-1. Fiabiliser ce qui existe deja.
-2. Rendre la correction et la generation IA plus explicites et testables.
-3. Garder une UX propre, discrete et academique.
-4. Poser une structure de code evolutive avant l'acceleration fonctionnelle.
-
+1. Garantir la qualite pedagogique de chaque examen genere.
+2. Structurer la correction autour d'un bareme et d'un diagnostic par concept.
+3. Rendre le mode examen plus credibile, concentre et rassurant.
+4. Continuer en TDD sur chaque brique critique du MVP.

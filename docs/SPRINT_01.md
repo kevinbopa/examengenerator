@@ -4,6 +4,10 @@
 
 Transformer la base actuelle en MVP credible, stable et pilotable.
 
+## Statut
+
+Sprint termine.
+
 ## Periode
 
 Sprint 1 de cadrage et de fiabilisation.
@@ -21,6 +25,9 @@ Critere d'acceptation :
 - les principaux endpoints sont decrits;
 - les zones a risque sont identifiees.
 
+Statut :
+- terminee via `#1`
+
 ### Story 2 - Tests backend sur les flux critiques
 
 En tant qu'equipe produit,
@@ -31,6 +38,9 @@ Critere d'acceptation :
 - une strategie de test est choisie;
 - au moins les flux generation/correction sont couverts;
 - les tests peuvent etre lances simplement.
+
+Statut :
+- terminee via `#2`
 
 ### Story 3 - Assistant linguistique stabilise
 
@@ -43,6 +53,9 @@ Critere d'acceptation :
 - le changement de question reinitialise proprement l'editeur;
 - les actions appliquer/ignorer restent coherentes.
 
+Statut :
+- terminee via `#3`
+
 ### Story 4 - Copie corrigee exploitable
 
 En tant qu'etudiant,
@@ -53,6 +66,9 @@ Critere d'acceptation :
 - la copie corrigee est generee a la demande;
 - l'original et la version corrigee sont visibles;
 - le contenu n'est pas enrichi artificiellement.
+
+Statut :
+- terminee via `#4`
 
 ### Story 5 - Prompts IA formalises
 
@@ -65,9 +81,19 @@ Critere d'acceptation :
 - les objectifs de correction sont formalises;
 - les contraintes de severite pedagogique et de respect du cours sont explicites.
 
+Statut :
+- terminee via `#5`
+
 ## Definition of Done du sprint
 
 - les stories prioritaires sont documentees;
 - les changements critiques sont verifies;
 - le projet build correctement;
 - le repo GitHub reste propre et comprehensible.
+
+## Resultat du sprint
+
+- les 5 stories retenues ont ete livrees;
+- les prompts IA sont centralises et testes;
+- la base documentaire produit/architecture est a jour;
+- le projet dispose d'une premiere suite de tests robuste pour les flux critiques.

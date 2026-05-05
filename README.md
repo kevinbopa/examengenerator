@@ -18,7 +18,10 @@ Le projet contient deja :
 - un serveur Express pour la generation et la correction IA;
 - une interface de simulation d'examen;
 - un assistant de correction linguistique;
-- une base de questions locales et une generation dynamique d'examens.
+- une base de questions locales et une generation dynamique d'examens;
+- une copie corrigee generee a la demande;
+- une architecture documentee;
+- des prompts IA centralises et testes.
 
 ## Stack
 
@@ -92,6 +95,9 @@ docs/
 - [mvp_correction_ia_structured_tdd.md](./mvp_correction_ia_structured_tdd.md)
 - [docs/ROADMAP.md](./docs/ROADMAP.md)
 - [docs/SPRINT_01.md](./docs/SPRINT_01.md)
+- [docs/SPRINT_02.md](./docs/SPRINT_02.md)
+- [docs/PROMPTS.md](./docs/PROMPTS.md)
+- [docs/architecture/README.md](./docs/architecture/README.md)
 
 ## Principes de travail
 
