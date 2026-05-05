@@ -5,7 +5,7 @@
 - Sprint 1 termine
 - Issues GitHub terminees : `#1`, `#2`, `#3`, `#4`, `#5`
 - Mode de travail actif : TDD par defaut sur la logique metier, les helpers critiques et les endpoints
-- Limite majeure actuelle : la generation d'examen reste encore largement dependante de la banque seed tant que l'upload et l'ingestion ne sont pas livres
+- Limite majeure actuelle : la generation d'examen reste encore largement dependante de la banque seed tant que l'index pedagogique et la generation source-driven ne sont pas livres
 
 ## Epic 1 - Fondations produit
 
@@ -20,16 +20,16 @@
 - [x] Creer un modele de cours generique
 - [x] Permettre l'upload de documents de cours
 - [x] Permettre l'upload d'anciens examens
-- [ ] Definir un stockage local MVP pour les sources
-- [ ] Afficher l'etat d'ingestion d'un cours
+- [x] Definir un stockage local MVP pour les sources
+- [x] Afficher l'etat d'ingestion d'un cours
 
 ## Epic 3 - Ingestion et base pedagogique
 
-- [ ] Extraire et nettoyer le texte des documents televerses
-- [ ] Extraire et nettoyer le texte des anciens examens televerses
+- [x] Extraire et nettoyer le texte des documents televerses
+- [x] Extraire et nettoyer le texte des anciens examens televerses
 - [ ] Construire un index exploitable par cours
 - [ ] Identifier les concepts, themes et signaux de style d'examen
-- [ ] Garantir une strategie de fallback si l'ingestion echoue
+- [x] Garantir une strategie de fallback si l'ingestion echoue
 
 ## Epic 4 - Generation d'examens IA par cours
 
@@ -82,6 +82,6 @@
 - [x] Creer un modele de cours generique
 - [x] Ajouter l'upload des documents de cours
 - [x] Ajouter l'upload des anciens examens
-- [ ] Construire le pipeline d'ingestion MVP
+- [x] Construire le pipeline d'ingestion MVP
 - [ ] Generer un examen a partir des sources televersees
 - [x] Formaliser le suivi des bugs avec une issue dediee a chaque bug detecte

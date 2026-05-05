@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import AppSidebar from "./components/AppSidebar";
 import CourseDocumentUploadCard from "./components/CourseDocumentUploadCard";
+import CourseIngestionCard from "./components/CourseIngestionCard";
 import Hero from "./components/Hero";
 import ExamWorkspace from "./components/ExamWorkspace";
 import PastExamUploadCard from "./components/PastExamUploadCard";
@@ -172,6 +173,29 @@ export default function App() {
     return payload.course;
   }
 
+  async function handleIngestCourse() {
+    if (!activeCourse) {
+      throw new Error("Aucun cours actif disponible.");
+    }
+
+    const response = await fetch(`/api/courses/${activeCourse.id}/ingest`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({})
+    });
+
+    const payload = await response.json();
+
+    if (!response.ok) {
+      throw new Error(payload.error || "L ingestion a echoue.");
+    }
+
+    setActiveCourse(payload.course);
+    return payload.course;
+  }
+
   async function finishExam(finalAnswers = answersById, finalExam = activeExam) {
     setIsEvaluating(true);
     setPhase("evaluating");
@@ -269,6 +293,10 @@ export default function App() {
               <PastExamUploadCard
                 activeCourse={activeCourse}
                 onUploadPastExam={handleUploadPastExam}
+              />
+              <CourseIngestionCard
+                activeCourse={activeCourse}
+                onIngestCourse={handleIngestCourse}
               />
             </>
           ) : null}

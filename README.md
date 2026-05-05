@@ -22,6 +22,7 @@ Le projet contient deja :
 - un modele de cours generique avec catalogue local seed;
 - un upload local de documents de cours pour le cours actif;
 - un upload local d'anciens examens avec metadonnees minimales;
+- un pipeline d'ingestion MVP avec nettoyage, segmentation et resume par cours;
 - une interface de simulation d'examen;
 - un assistant de correction linguistique;
 - une base de questions locales et une generation dynamique d'examens;
@@ -30,7 +31,7 @@ Le projet contient deja :
 - des prompts IA centralises et testes.
 
 Limite actuelle :
-- le flux principal reste encore trop dependant de sources locales hardcodees autour du chapitre Agilite / XP.
+- l'index pedagogique et la generation full source-driven ne sont pas encore finalises, donc le flux principal reste encore partiellement dependant de la banque seed Agilite / XP.
 
 ## Stack
 
@@ -86,6 +87,17 @@ Metadonnees minimales actuellement requises :
 - `year`
 - `sourceName`
 
+## Ingestion des sources
+
+Le MVP permet maintenant de lancer une ingestion du cours actif.
+
+Cette etape :
+- extrait un texte brut best-effort;
+- nettoie le texte;
+- le segmente en blocs exploitables;
+- produit un resume global du cours;
+- prepare la future generation d'un examen d'exemple a partir des textes ingeres.
+
 ## Tests
 
 Lancer les tests backend :
@@ -95,6 +107,7 @@ npm test
 ```
 
 La strategie actuelle couvre d'abord les endpoints critiques en mode fallback :
+- ingestion de cours;
 - generation d'examen;
 - correction d'examen;
 - copie corrigee;

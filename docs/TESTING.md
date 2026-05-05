@@ -25,6 +25,7 @@ Les tests backend couvrent d'abord les comportements de secours et de validation
 - `POST /api/courses`
 - `POST /api/courses/:courseId/documents`
 - `POST /api/courses/:courseId/past-exams`
+- `POST /api/courses/:courseId/ingest`
 - `POST /api/generate-exam`
 - `POST /api/evaluate-exam`
 - `POST /api/generate-corrected-copy`
@@ -65,6 +66,13 @@ La suite couvre aussi l'upload des anciens examens :
 - verification des metadonnees minimales;
 - persistence locale d'un ancien examen lie a un cours;
 - mise a jour du catalogue apres televersement.
+
+La suite couvre aussi le pipeline d'ingestion MVP :
+- nettoyage du texte extrait;
+- segmentation en blocs exploitables;
+- resume d'ingestion par cours;
+- ingestion backend des documents et anciens examens;
+- rejet explicite d'un cours vide sans source a ingerer.
 
 ## Pourquoi le mode fallback en premier
 

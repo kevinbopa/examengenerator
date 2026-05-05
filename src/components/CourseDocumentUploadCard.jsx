@@ -70,7 +70,11 @@ export default function CourseDocumentUploadCard({ activeCourse, onUploadDocumen
             <strong>{selectedFile ? selectedFile.name : "Aucun fichier selectionne"}</strong>
             <span>Formats acceptes : md, txt, pdf, docx</span>
           </div>
-          <button className="primary-button" type="submit" disabled={!selectedFile || !activeCourse || isUploading}>
+          <button
+            className="primary-button"
+            type="submit"
+            disabled={!selectedFile || !activeCourse || isUploading}
+          >
             {isUploading ? "Televersement..." : "Ajouter au cours"}
           </button>
         </div>
@@ -85,7 +89,10 @@ export default function CourseDocumentUploadCard({ activeCourse, onUploadDocumen
           <div className="course-upload-item" key={source.id}>
             <div>
               <strong>{source.title}</strong>
-              <span>{source.format.toUpperCase()} • {source.status}</span>
+              <span>
+                {source.format.toUpperCase()} | {source.status}
+                {source.segments?.length ? ` | ${source.segments.length} segments` : ""}
+              </span>
             </div>
           </div>
         ))}

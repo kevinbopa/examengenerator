@@ -117,7 +117,7 @@ Sorties attendues :
 - texte brut extrait;
 - texte nettoye;
 - segments exploitables;
-- erreurs et warnings d'ingestion.
+- erreurs et warnings d'ingestion;
 - une base suffisante pour pouvoir produire un premier examen d'exemple du cours.
 
 Critere d'acceptation :
@@ -126,6 +126,10 @@ Critere d'acceptation :
 - chaque source a un statut clair;
 - une strategie de fallback existe si un document ne peut pas etre parse;
 - la logique est testee en TDD.
+
+Statut :
+- terminee
+- livree avec endpoint `POST /api/courses/:courseId/ingest`, extraction best-effort, nettoyage, segmentation, resume d'ingestion, garde-fou sur cours vide et reutilisation des textes ingeres pour preparer la generation future
 
 ### Issue 10 - Construire l'index pedagogique d'un cours
 
@@ -186,9 +190,8 @@ Statut :
 
 ## Ordre recommande
 
-1. Issue 9 - Pipeline d'ingestion MVP
-2. Issue 10 - Index pedagogique
-3. Issue 11 - Generation a partir des sources
+1. Issue 10 - Index pedagogique
+2. Issue 11 - Generation a partir des sources
 
 ## Definition of Done du sprint
 

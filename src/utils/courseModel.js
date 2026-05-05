@@ -22,6 +22,7 @@ export function createCourse(input) {
       VALID_INGESTION_STATUSES,
       "draft"
     ),
+    ingestionSummary: normalizeIngestionSummary(input?.ingestionSummary),
     createdAt,
     updatedAt
   };
@@ -86,7 +87,12 @@ function createCourseSource(input, fallbackKind, index) {
     filePath,
     status: normalizeEnum(input?.status, VALID_SOURCE_STATUSES, "uploaded"),
     session: optionalString(input?.session),
-    year: Number.isInteger(input?.year) ? input.year : null
+    year: Number.isInteger(input?.year) ? input.year : null,
+    rawText: optionalString(input?.rawText),
+    cleanedText: optionalString(input?.cleanedText),
+    segments: Array.isArray(input?.segments) ? input.segments.filter(Boolean) : [],
+    warnings: Array.isArray(input?.warnings) ? input.warnings.filter(Boolean) : [],
+    ingestedAt: optionalString(input?.ingestedAt)
   };
 }
 
@@ -107,6 +113,26 @@ function normalizeEnum(value, allowedValues, fallbackValue) {
     return value;
   }
   return fallbackValue;
+}
+
+function normalizeIngestionSummary(summary) {
+  if (!summary || typeof summary !== "object") {
+    return {
+      totalItems: 0,
+      readyItems: 0,
+      failedItems: 0,
+      warningCount: 0,
+      totalSegments: 0
+    };
+  }
+
+  return {
+    totalItems: Number(summary.totalItems) || 0,
+    readyItems: Number(summary.readyItems) || 0,
+    failedItems: Number(summary.failedItems) || 0,
+    warningCount: Number(summary.warningCount) || 0,
+    totalSegments: Number(summary.totalSegments) || 0
+  };
 }
 
 function isoTimestamp(value) {

@@ -225,6 +225,63 @@ test(
   }
 );
 
+test(
+  "POST /api/courses/:courseId/ingest processes course sources and past exams with a clear status",
+  { concurrency: false },
+  async () => {
+    const createResponse = await postJson("/api/courses", {
+      title: "Architecture logicielle",
+      courseCode: "GLO4001",
+      description: "Cours de conception et d'architecture"
+    });
+    const created = await createResponse.json();
+
+    await postJson(`/api/courses/${created.course.id}/documents`, {
+      fileName: "notes-cours.md",
+      mimeType: "text/markdown",
+      contentBase64: Buffer.from("# Architecture\nLe cours couvre les styles et decisions.", "utf8").toString("base64")
+    });
+
+    await postJson(`/api/courses/${created.course.id}/past-exams`, {
+      fileName: "intra-h2025.txt",
+      mimeType: "text/plain",
+      contentBase64: Buffer.from("Question 1. Explique les styles architecturaux.", "utf8").toString("base64"),
+      session: "Hiver",
+      year: 2025,
+      sourceName: "Intra Hiver 2025"
+    });
+
+    const ingestResponse = await postJson(`/api/courses/${created.course.id}/ingest`, {});
+    assert.equal(ingestResponse.status, 200);
+
+    const payload = await ingestResponse.json();
+    assert.equal(payload.course.ingestionStatus, "ready");
+    assert.ok(payload.summary.totalItems >= 2);
+    assert.ok(payload.summary.readyItems >= 2);
+    assert.ok(payload.course.sources[0].cleanedText?.length > 0);
+    assert.ok(payload.course.pastExams[0].segments?.length > 0);
+  }
+);
+
+test(
+  "POST /api/courses/:courseId/ingest rejects an empty course with no sources to process",
+  { concurrency: false },
+  async () => {
+    const createResponse = await postJson("/api/courses", {
+      title: "Architecture logicielle",
+      courseCode: "GLO4001",
+      description: "Cours de conception et d'architecture"
+    });
+    const created = await createResponse.json();
+
+    const ingestResponse = await postJson(`/api/courses/${created.course.id}/ingest`, {});
+    assert.equal(ingestResponse.status, 400);
+
+    const payload = await ingestResponse.json();
+    assert.match(payload.error, /aucune source/i);
+  }
+);
+
 test("POST /api/generate-exam returns the fallback exam when AI is disabled", { concurrency: false }, async () => {
   const response = await postJson("/api/generate-exam", {
     chapterId: examBlueprint.chapter

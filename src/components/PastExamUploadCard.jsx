@@ -118,7 +118,7 @@ export default function PastExamUploadCard({ activeCourse, onUploadPastExam }) {
             type="submit"
             disabled={!selectedFile || !activeCourse || !sourceName.trim() || !year.trim() || isUploading}
           >
-            {isUploading ? "Televersement..." : "Ajouter l'ancien examen"}
+            {isUploading ? "Televersement..." : "Ajouter l ancien examen"}
           </button>
         </div>
       </form>
@@ -133,7 +133,8 @@ export default function PastExamUploadCard({ activeCourse, onUploadPastExam }) {
             <div>
               <strong>{pastExam.title}</strong>
               <span>
-                {pastExam.session} {pastExam.year} • {pastExam.format.toUpperCase()} • {pastExam.status}
+                {pastExam.session} {pastExam.year} | {pastExam.format.toUpperCase()} | {pastExam.status}
+                {pastExam.segments?.length ? ` | ${pastExam.segments.length} segments` : ""}
               </span>
             </div>
           </div>

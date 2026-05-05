@@ -10,6 +10,7 @@ import {
   addPastExam,
   createLocalCourse,
   getActiveCourse,
+  ingestCourse,
   loadCourseCatalog
 } from "./courseStore.mjs";
 import { normalizeCorrectedCopyPayload } from "../src/utils/correctedCopy.js";
@@ -104,6 +105,21 @@ app.post("/api/courses/:courseId/past-exams", async (request, response) => {
   } catch (error) {
     response.status(400).json({
       error: error.message || "Ancien examen invalide."
+    });
+  }
+});
+
+app.post("/api/courses/:courseId/ingest", async (request, response) => {
+  try {
+    const result = await ingestCourse(projectRoot, request.params.courseId);
+    response.json({
+      course: result.course,
+      summary: result.summary,
+      activeCourseId: result.catalog.activeCourseId
+    });
+  } catch (error) {
+    response.status(400).json({
+      error: error.message || "Ingestion impossible."
     });
   }
 });
@@ -591,21 +607,39 @@ async function resolveCourseForExam(exam) {
 }
 
 async function loadCoursePromptContext(course) {
-  const chapterSource = course.sources[0];
-  const chapterText = chapterSource
-    ? await fs.readFile(resolveProjectFile(chapterSource.filePath), "utf8")
-    : await fs.readFile(resolveProjectFile("H26_GLO2003_09_Agilite_XP.md"), "utf8");
-
+  const chapterFragments = await Promise.all(
+    (course.sources || []).map((source) => readSourcePromptText(source))
+  );
   const exampleFragments = await Promise.all(
-    (course.pastExams || []).map(async (pastExam) =>
-      fs.readFile(resolveProjectFile(pastExam.filePath), "utf8")
-    )
+    (course.pastExams || []).map((pastExam) => readSourcePromptText(pastExam))
   );
 
   return {
-    chapterText,
+    chapterText:
+      chapterFragments.filter(Boolean).join("\n\n") ||
+      (await fs.readFile(resolveProjectFile("H26_GLO2003_09_Agilite_XP.md"), "utf8")),
     examplesText: exampleFragments.join("\n\n")
   };
+}
+
+async function readSourcePromptText(source) {
+  if (source?.segments?.length) {
+    return source.segments.join("\n\n");
+  }
+
+  if (source?.cleanedText) {
+    return source.cleanedText;
+  }
+
+  if (!source?.filePath) {
+    return "";
+  }
+
+  try {
+    return await fs.readFile(resolveProjectFile(source.filePath), "utf8");
+  } catch {
+    return "";
+  }
 }
 
 function resolveProjectFile(relativeOrAbsolutePath) {

@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { extractTextFromBuffer, summarizeCourseIngestion } from "./courseIngestion.mjs";
 import {
   createCourse,
   createCourseCatalog,
@@ -169,6 +170,51 @@ export async function addPastExam(projectRoot, courseId, input) {
   };
 }
 
+export async function ingestCourse(projectRoot, courseId) {
+  const catalog = await loadCourseCatalog(projectRoot);
+  const targetCourse = catalog.courses.find((course) => course.id === courseId);
+
+  if (!targetCourse) {
+    throw new Error("Course introuvable.");
+  }
+
+  if (targetCourse.sources.length === 0 && targetCourse.pastExams.length === 0) {
+    throw new Error("Aucune source a ingerer pour ce cours.");
+  }
+
+  const processedSources = await Promise.all(
+    targetCourse.sources.map((source) => ingestStoredSource(projectRoot, source))
+  );
+  const processedPastExams = await Promise.all(
+    targetCourse.pastExams.map((pastExam) => ingestStoredSource(projectRoot, pastExam))
+  );
+
+  const provisionalCourse = createCourse({
+    ...targetCourse,
+    sources: processedSources,
+    pastExams: processedPastExams,
+    ingestionStatus: computeCourseIngestionStatus([...processedSources, ...processedPastExams]),
+    ingestionSummary: summarizeCourseIngestion({
+      sources: processedSources,
+      pastExams: processedPastExams
+    }),
+    updatedAt: new Date().toISOString()
+  });
+
+  const nextCatalog = createCourseCatalog({
+    courses: catalog.courses.map((course) => (course.id === courseId ? provisionalCourse : course)),
+    activeCourseId: catalog.activeCourseId
+  });
+
+  await saveCourseCatalog(projectRoot, nextCatalog);
+
+  return {
+    course: provisionalCourse,
+    summary: provisionalCourse.ingestionSummary,
+    catalog: nextCatalog
+  };
+}
+
 export function getActiveCourse(catalog, requestedCourseId) {
   return resolveActiveCourse(catalog, requestedCourseId);
 }
@@ -199,6 +245,72 @@ function readableTitleFromFileName(fileName) {
     .basename(fileName, path.extname(fileName))
     .replace(/[-_]+/g, " ")
     .trim();
+}
+
+async function ingestStoredSource(projectRoot, source) {
+  const absolutePath = await resolveStoredFile(projectRoot, source.filePath);
+  const now = new Date().toISOString();
+
+  try {
+    const buffer = await fs.readFile(absolutePath);
+    const extraction = extractTextFromBuffer({
+      buffer,
+      format: source.format
+    });
+
+    return {
+      ...source,
+      status: extraction.status,
+      rawText: extraction.rawText,
+      cleanedText: extraction.cleanedText,
+      segments: extraction.segments,
+      warnings: extraction.warnings,
+      ingestedAt: now
+    };
+  } catch (error) {
+    return {
+      ...source,
+      status: "failed",
+      rawText: "",
+      cleanedText: "",
+      segments: [],
+      warnings: [`Lecture impossible: ${error.message}`],
+      ingestedAt: now
+    };
+  }
+}
+
+async function resolveStoredFile(projectRoot, filePath) {
+  if (path.isAbsolute(filePath)) {
+    return filePath;
+  }
+
+  const storageRoot = getCourseStorageDir(projectRoot);
+  const candidateInStorage = path.join(storageRoot, filePath);
+  const candidateInProject = path.join(projectRoot, filePath);
+
+  try {
+    await fs.access(candidateInStorage);
+    return candidateInStorage;
+  } catch {
+    return candidateInProject;
+  }
+}
+
+function computeCourseIngestionStatus(items) {
+  if (items.length === 0) {
+    return "draft";
+  }
+
+  if (items.every((item) => item.status === "ready")) {
+    return "ready";
+  }
+
+  if (items.some((item) => item.status === "ready")) {
+    return "processing";
+  }
+
+  return "failed";
 }
 
 function requiredString(value, fieldName) {

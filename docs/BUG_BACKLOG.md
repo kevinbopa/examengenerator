@@ -10,4 +10,6 @@ Chaque bug detecte doit etre :
 
 ## Etat actuel
 
-- `BUG-001` `P1` - Les fichiers de cours televerses pour un nouveau cours sont bien stockes localement, mais le pipeline de generation ne relit pas encore ces chemins depuis le repertoire de stockage dedie. Impact : la future generation a partir d'un cours utilisateur risque d'echouer tant que la resolution de chemin n'est pas branchee sur le storage des uploads.
+- `BUG-001` `P1` - Corrige dans l'issue 9. Les textes ingeres sont maintenant reutilises par le contexte de generation, et la lecture de secours ne bloque plus la progression du pipeline.
+- `BUG-002` `P3` - Corrige dans l'issue 9. Des artefacts d'encodage apparaissaient dans certaines cartes d'upload et d'ingestion, ce qui degradiait la lisibilite du suivi de sources.
+- `BUG-003` `P1` - Corrige dans l'issue 9. L'endpoint d'ingestion acceptait un cours vide sans aucune source ni ancien examen, ce qui pouvait afficher un statut trompeur et lancer un pipeline sans matiere exploitable.
