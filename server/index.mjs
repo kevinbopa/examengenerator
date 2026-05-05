@@ -7,6 +7,7 @@ import OpenAI from "openai";
 import { examBlueprint, flattenQuestions } from "../src/data/examData.js";
 import {
   addCourseDocument,
+  addPastExam,
   createLocalCourse,
   getActiveCourse,
   loadCourseCatalog
@@ -80,6 +81,29 @@ app.post("/api/courses/:courseId/documents", async (request, response) => {
   } catch (error) {
     response.status(400).json({
       error: error.message || "Document invalide."
+    });
+  }
+});
+
+app.post("/api/courses/:courseId/past-exams", async (request, response) => {
+  try {
+    const created = await addPastExam(projectRoot, request.params.courseId, {
+      fileName: request.body?.fileName,
+      mimeType: request.body?.mimeType,
+      contentBase64: request.body?.contentBase64,
+      session: request.body?.session,
+      year: request.body?.year,
+      sourceName: request.body?.sourceName
+    });
+
+    response.status(201).json({
+      course: created.course,
+      pastExam: created.pastExam,
+      activeCourseId: created.catalog.activeCourseId
+    });
+  } catch (error) {
+    response.status(400).json({
+      error: error.message || "Ancien examen invalide."
     });
   }
 });

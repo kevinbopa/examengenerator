@@ -681,6 +681,12 @@ textarea {
   margin-top: 18px;
 }
 
+.course-upload-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
 .course-upload-field {
   display: grid;
   gap: 8px;
@@ -693,6 +699,16 @@ textarea {
   border-radius: 16px;
   border: 1px dashed rgba(91, 92, 240, 0.24);
   background: rgba(247, 249, 255, 0.92);
+}
+
+.course-upload-field input[type="text"],
+.course-upload-field input[type="number"],
+.course-upload-field select {
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(105, 120, 172, 0.14);
+  background: rgba(251, 252, 255, 0.96);
+  color: var(--text);
 }
 
 .course-upload-actions {
@@ -1587,6 +1603,10 @@ textarea {
   .question-preview-top {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .course-upload-grid {
+    grid-template-columns: 1fr;
   }
 
   .hero-visual-shell {

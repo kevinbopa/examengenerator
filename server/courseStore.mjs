@@ -4,6 +4,7 @@ import {
   createCourse,
   createCourseCatalog,
   isSupportedCourseDocumentFormat,
+  isSupportedPastExamFormat,
   resolveActiveCourse
 } from "../src/utils/courseModel.js";
 
@@ -107,6 +108,67 @@ export async function addCourseDocument(projectRoot, courseId, input) {
   };
 }
 
+export async function addPastExam(projectRoot, courseId, input) {
+  const catalog = await loadCourseCatalog(projectRoot);
+  const targetCourse = catalog.courses.find((course) => course.id === courseId);
+
+  if (!targetCourse) {
+    throw new Error("Course introuvable.");
+  }
+
+  const fileName = requiredString(input?.fileName, "fileName");
+  const contentBase64 = requiredString(input?.contentBase64, "contentBase64");
+  const session = requiredString(input?.session, "session");
+  const sourceName = requiredString(input?.sourceName, "sourceName");
+  const year = normalizeYear(input?.year);
+  const format = normalizeFileFormat(fileName);
+
+  if (!Number.isInteger(year)) {
+    throw new Error("Invalid year.");
+  }
+
+  if (!isSupportedPastExamFormat(format)) {
+    throw new Error("Format d'ancien examen non supporte.");
+  }
+
+  const relativeFilePath = buildStoredPastExamPath(courseId, fileName, format);
+  const storageRoot = getCourseStorageDir(projectRoot);
+  const absoluteFilePath = path.join(storageRoot, relativeFilePath);
+
+  await fs.mkdir(path.dirname(absoluteFilePath), { recursive: true });
+  await fs.writeFile(absoluteFilePath, Buffer.from(contentBase64, "base64"));
+
+  const now = new Date().toISOString();
+  const pastExam = {
+    id: slugify(`past-exam-${sourceName}-${Date.now()}`),
+    kind: "pastExam",
+    title: sourceName,
+    format,
+    filePath: relativeFilePath,
+    status: "uploaded",
+    session,
+    year
+  };
+
+  const updatedCourse = createCourse({
+    ...targetCourse,
+    pastExams: [...targetCourse.pastExams, pastExam],
+    updatedAt: now
+  });
+  const nextCatalog = createCourseCatalog({
+    courses: catalog.courses.map((course) => (course.id === courseId ? updatedCourse : course)),
+    activeCourseId: catalog.activeCourseId
+  });
+
+  await saveCourseCatalog(projectRoot, nextCatalog);
+
+  return {
+    course: updatedCourse,
+    pastExam,
+    catalog: nextCatalog
+  };
+}
+
 export function getActiveCourse(catalog, requestedCourseId) {
   return resolveActiveCourse(catalog, requestedCourseId);
 }
@@ -127,6 +189,11 @@ function buildStoredSourcePath(courseId, fileName, format) {
   return path.join(courseId, "sources", `${Date.now()}-${baseName}.${format}`);
 }
 
+function buildStoredPastExamPath(courseId, fileName, format) {
+  const baseName = slugify(path.basename(fileName, path.extname(fileName)));
+  return path.join(courseId, "past-exams", `${Date.now()}-${baseName}.${format}`);
+}
+
 function readableTitleFromFileName(fileName) {
   return path
     .basename(fileName, path.extname(fileName))
@@ -140,6 +207,19 @@ function requiredString(value, fieldName) {
     throw new Error(`Invalid ${fieldName}.`);
   }
   return normalized;
+}
+
+function normalizeYear(value) {
+  if (Number.isInteger(value)) {
+    return value;
+  }
+
+  if (typeof value === "string" && value.trim()) {
+    const parsed = Number.parseInt(value.trim(), 10);
+    return Number.isInteger(parsed) ? parsed : null;
+  }
+
+  return null;
 }
 
 function slugify(value) {

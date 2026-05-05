@@ -5,6 +5,7 @@ import {
   createCourse,
   createCourseCatalog,
   isSupportedCourseDocumentFormat,
+  isSupportedPastExamFormat,
   resolveActiveCourse
 } from "../src/utils/courseModel.js";
 
@@ -102,4 +103,12 @@ test("isSupportedCourseDocumentFormat accepts the MVP course document formats", 
   assert.equal(isSupportedCourseDocumentFormat("pdf"), true);
   assert.equal(isSupportedCourseDocumentFormat("docx"), true);
   assert.equal(isSupportedCourseDocumentFormat("png"), false);
+});
+
+test("isSupportedPastExamFormat accepts the MVP past exam formats", () => {
+  assert.equal(isSupportedPastExamFormat("md"), true);
+  assert.equal(isSupportedPastExamFormat("txt"), true);
+  assert.equal(isSupportedPastExamFormat("pdf"), true);
+  assert.equal(isSupportedPastExamFormat("docx"), true);
+  assert.equal(isSupportedPastExamFormat("png"), false);
 });

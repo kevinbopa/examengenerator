@@ -2,6 +2,7 @@ const VALID_SOURCE_KINDS = new Set(["courseDocument", "pastExam"]);
 const VALID_INGESTION_STATUSES = new Set(["draft", "ready", "processing", "failed"]);
 const VALID_SOURCE_STATUSES = new Set(["uploaded", "ready", "missing", "failed"]);
 const SUPPORTED_COURSE_DOCUMENT_FORMATS = new Set(["pdf", "md", "txt", "docx"]);
+const SUPPORTED_PAST_EXAM_FORMATS = new Set(["pdf", "md", "txt", "docx"]);
 
 export function createCourse(input) {
   const title = requiredString(input?.title, "title");
@@ -61,6 +62,10 @@ export function resolveActiveCourse(catalog, requestedCourseId) {
 
 export function isSupportedCourseDocumentFormat(format) {
   return SUPPORTED_COURSE_DOCUMENT_FORMATS.has(String(format || "").trim().toLowerCase());
+}
+
+export function isSupportedPastExamFormat(format) {
+  return SUPPORTED_PAST_EXAM_FORMATS.has(String(format || "").trim().toLowerCase());
 }
 
 function normalizeSourceList(entries, fallbackKind) {

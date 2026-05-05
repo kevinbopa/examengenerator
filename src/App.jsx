@@ -3,6 +3,7 @@ import AppSidebar from "./components/AppSidebar";
 import CourseDocumentUploadCard from "./components/CourseDocumentUploadCard";
 import Hero from "./components/Hero";
 import ExamWorkspace from "./components/ExamWorkspace";
+import PastExamUploadCard from "./components/PastExamUploadCard";
 import ResultsView from "./components/ResultsView";
 import RightRail from "./components/RightRail";
 import { examBlueprint, flattenQuestions } from "./data/examData";
@@ -140,6 +141,37 @@ export default function App() {
     return payload.course;
   }
 
+  async function handleUploadPastExam({ file, session, year, sourceName }) {
+    if (!activeCourse) {
+      throw new Error("Aucun cours actif disponible.");
+    }
+
+    const contentBase64 = await fileToBase64(file);
+    const response = await fetch(`/api/courses/${activeCourse.id}/past-exams`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        fileName: file.name,
+        mimeType: file.type,
+        contentBase64,
+        session,
+        year: Number.parseInt(year, 10),
+        sourceName
+      })
+    });
+
+    const payload = await response.json();
+
+    if (!response.ok) {
+      throw new Error(payload.error || "Le televersement a echoue.");
+    }
+
+    setActiveCourse(payload.course);
+    return payload.course;
+  }
+
   async function finishExam(finalAnswers = answersById, finalExam = activeExam) {
     setIsEvaluating(true);
     setPhase("evaluating");
@@ -233,6 +265,10 @@ export default function App() {
               <CourseDocumentUploadCard
                 activeCourse={activeCourse}
                 onUploadDocument={handleUploadCourseDocument}
+              />
+              <PastExamUploadCard
+                activeCourse={activeCourse}
+                onUploadPastExam={handleUploadPastExam}
               />
             </>
           ) : null}

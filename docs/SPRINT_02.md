@@ -96,6 +96,10 @@ Critere d'acceptation :
 - les erreurs de televersement sont claires;
 - les parcours critiques sont testes.
 
+Statut :
+- terminee
+- livree avec endpoint `POST /api/courses/:courseId/past-exams`, stockage local MVP, metadonnees minimales `session`, `year`, `sourceName`, validation des formats et interface dediee sur la landing
+
 ### Issue 9 - Construire le pipeline d'ingestion MVP
 
 En tant que systeme,
@@ -182,10 +186,9 @@ Statut :
 
 ## Ordre recommande
 
-1. Issue 8 - Upload des anciens examens
-2. Issue 9 - Pipeline d'ingestion MVP
-3. Issue 10 - Index pedagogique
-4. Issue 11 - Generation a partir des sources
+1. Issue 9 - Pipeline d'ingestion MVP
+2. Issue 10 - Index pedagogique
+3. Issue 11 - Generation a partir des sources
 
 ## Definition of Done du sprint
 

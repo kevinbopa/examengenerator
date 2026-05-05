@@ -159,6 +159,72 @@ test(
   }
 );
 
+test(
+  "POST /api/courses/:courseId/past-exams uploads and persists a valid past exam with metadata",
+  { concurrency: false },
+  async () => {
+    const createResponse = await postJson("/api/courses", {
+      title: "Architecture logicielle",
+      courseCode: "GLO4001",
+      description: "Cours de conception et d'architecture"
+    });
+    const created = await createResponse.json();
+
+    const uploadResponse = await postJson(`/api/courses/${created.course.id}/past-exams`, {
+      fileName: "intra-h2025.pdf",
+      mimeType: "application/pdf",
+      contentBase64: Buffer.from("fake pdf content", "utf8").toString("base64"),
+      session: "Hiver",
+      year: 2025,
+      sourceName: "Intra Hiver 2025"
+    });
+
+    assert.equal(uploadResponse.status, 201);
+    const payload = await uploadResponse.json();
+
+    assert.equal(payload.course.id, "glo4001");
+    assert.equal(payload.pastExam.kind, "pastExam");
+    assert.equal(payload.pastExam.format, "pdf");
+    assert.equal(payload.pastExam.session, "Hiver");
+    assert.equal(payload.pastExam.year, 2025);
+    assert.equal(payload.pastExam.title, "Intra Hiver 2025");
+
+    const storedPath = path.join(process.env.COURSE_STORAGE_DIR, payload.pastExam.filePath);
+    const storedContent = await fs.readFile(storedPath, "utf8");
+    assert.match(storedContent, /fake pdf content/);
+
+    const catalogResponse = await fetch(`${baseUrl}/api/courses`);
+    const catalogPayload = await catalogResponse.json();
+    const storedCourse = catalogPayload.courses.find((course) => course.id === "glo4001");
+    assert.ok(storedCourse.pastExams.some((pastExam) => pastExam.id === payload.pastExam.id));
+  }
+);
+
+test(
+  "POST /api/courses/:courseId/past-exams rejects a past exam without required metadata",
+  { concurrency: false },
+  async () => {
+    const createResponse = await postJson("/api/courses", {
+      title: "Architecture logicielle",
+      courseCode: "GLO4001"
+    });
+    const created = await createResponse.json();
+
+    const uploadResponse = await postJson(`/api/courses/${created.course.id}/past-exams`, {
+      fileName: "intra-h2025.pdf",
+      mimeType: "application/pdf",
+      contentBase64: Buffer.from("fake pdf content", "utf8").toString("base64"),
+      session: "",
+      year: null,
+      sourceName: ""
+    });
+
+    assert.equal(uploadResponse.status, 400);
+    const payload = await uploadResponse.json();
+    assert.match(payload.error, /session|year|sourceName/i);
+  }
+);
+
 test("POST /api/generate-exam returns the fallback exam when AI is disabled", { concurrency: false }, async () => {
   const response = await postJson("/api/generate-exam", {
     chapterId: examBlueprint.chapter

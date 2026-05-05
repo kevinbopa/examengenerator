@@ -21,6 +21,7 @@ Le projet contient deja :
 - un serveur Express pour la generation et la correction IA;
 - un modele de cours generique avec catalogue local seed;
 - un upload local de documents de cours pour le cours actif;
+- un upload local d'anciens examens avec metadonnees minimales;
 - une interface de simulation d'examen;
 - un assistant de correction linguistique;
 - une base de questions locales et une generation dynamique d'examens;
@@ -75,6 +76,15 @@ Formats actuellement acceptes :
 - `txt`
 - `pdf`
 - `docx`
+
+## Upload d'anciens examens
+
+Le MVP permet aussi de televerser des anciens examens pour le cours actif.
+
+Metadonnees minimales actuellement requises :
+- `session`
+- `year`
+- `sourceName`
 
 ## Tests
 

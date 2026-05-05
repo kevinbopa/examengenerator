@@ -24,6 +24,7 @@ Les tests backend couvrent d'abord les comportements de secours et de validation
 - `GET /api/courses`
 - `POST /api/courses`
 - `POST /api/courses/:courseId/documents`
+- `POST /api/courses/:courseId/past-exams`
 - `POST /api/generate-exam`
 - `POST /api/evaluate-exam`
 - `POST /api/generate-corrected-copy`
@@ -57,6 +58,12 @@ La suite couvre aussi le nouveau modele de cours :
 La suite couvre aussi l'upload de documents de cours :
 - validation des formats supportes;
 - persistence locale d'un document lie a un cours;
+- mise a jour du catalogue apres televersement.
+
+La suite couvre aussi l'upload des anciens examens :
+- validation des formats supportes;
+- verification des metadonnees minimales;
+- persistence locale d'un ancien examen lie a un cours;
 - mise a jour du catalogue apres televersement.
 
 ## Pourquoi le mode fallback en premier
