@@ -171,6 +171,59 @@ export async function addPastExam(projectRoot, courseId, input) {
   };
 }
 
+export async function removeCourseSource(projectRoot, courseId, sourceId, kind) {
+  const catalog = await loadCourseCatalog(projectRoot);
+  const targetCourse = catalog.courses.find((course) => course.id === courseId);
+
+  if (!targetCourse) {
+    throw new Error("Course introuvable.");
+  }
+
+  let updatedSources = targetCourse.sources;
+  let updatedPastExams = targetCourse.pastExams;
+  let removedItem = null;
+
+  if (kind === "source") {
+    removedItem = targetCourse.sources.find((s) => s.id === sourceId);
+    if (!removedItem) throw new Error("Document introuvable.");
+    updatedSources = targetCourse.sources.filter((s) => s.id !== sourceId);
+  } else {
+    removedItem = targetCourse.pastExams.find((s) => s.id === sourceId);
+    if (!removedItem) throw new Error("Ancien examen introuvable.");
+    updatedPastExams = targetCourse.pastExams.filter((s) => s.id !== sourceId);
+  }
+
+  // Try to delete the stored file (best-effort)
+  if (removedItem.filePath) {
+    try {
+      const storageRoot = getCourseStorageDir(projectRoot);
+      const absolutePath = path.join(storageRoot, removedItem.filePath);
+      await fs.unlink(absolutePath);
+    } catch {
+      // File might not exist or already deleted — that's fine
+    }
+  }
+
+  const updatedCourse = createCourse({
+    ...targetCourse,
+    sources: updatedSources,
+    pastExams: updatedPastExams,
+    updatedAt: new Date().toISOString()
+  });
+
+  const nextCatalog = createCourseCatalog({
+    courses: catalog.courses.map((course) => (course.id === courseId ? updatedCourse : course)),
+    activeCourseId: catalog.activeCourseId
+  });
+
+  await saveCourseCatalog(projectRoot, nextCatalog);
+
+  return {
+    course: updatedCourse,
+    catalog: nextCatalog
+  };
+}
+
 export async function ingestCourse(projectRoot, courseId) {
   const catalog = await loadCourseCatalog(projectRoot);
   const targetCourse = catalog.courses.find((course) => course.id === courseId);
@@ -322,7 +375,7 @@ async function ingestStoredSource(projectRoot, source) {
 
   try {
     const buffer = await fs.readFile(absolutePath);
-    const extraction = extractTextFromBuffer({
+    const extraction = await extractTextFromBuffer({
       buffer,
       format: source.format
     });

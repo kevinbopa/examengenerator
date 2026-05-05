@@ -23,8 +23,8 @@ test("extractSegments splits a cleaned text into usable chunks", () => {
   assert.match(segments[1], /Autre bloc/);
 });
 
-test("extractTextFromBuffer extracts text for markdown and txt files", () => {
-  const result = extractTextFromBuffer({
+test("extractTextFromBuffer extracts text for markdown and txt files", async () => {
+  const result = await extractTextFromBuffer({
     buffer: Buffer.from("# Titre\nContenu du cours", "utf8"),
     format: "md"
   });
@@ -34,8 +34,8 @@ test("extractTextFromBuffer extracts text for markdown and txt files", () => {
   assert.ok(result.segments.length >= 1);
 });
 
-test("extractTextFromBuffer falls back cleanly when binary-like content is not exploitable", () => {
-  const result = extractTextFromBuffer({
+test("extractTextFromBuffer rejects corrupted binary-like content instead of exposing raw garbage", async () => {
+  const result = await extractTextFromBuffer({
     buffer: Buffer.from([0, 159, 18, 255, 12, 0, 3, 4]),
     format: "pdf"
   });
@@ -43,6 +43,17 @@ test("extractTextFromBuffer falls back cleanly when binary-like content is not e
   assert.equal(result.status, "failed");
   assert.ok(result.warnings.length >= 1);
   assert.equal(result.cleanedText, "");
+});
+
+test("extractTextFromBuffer rejects PDF marker garbage that should never reach generation", async () => {
+  const result = await extractTextFromBuffer({
+    buffer: Buffer.from("%PDF-1.4 obj endobj stream endstream xref trailer", "utf8"),
+    format: "pdf"
+  });
+
+  assert.equal(result.status, "failed");
+  assert.equal(result.cleanedText, "");
+  assert.ok(result.warnings.some((warning) => /ignoree|exploitable/i.test(warning)));
 });
 
 test("summarizeCourseIngestion returns a compact course-level summary", () => {

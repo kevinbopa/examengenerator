@@ -35,6 +35,8 @@ test("buildExamGenerationPrompt formalizes the severe academic generation rules"
   assert.match(prompt.userText, /Index pedagogique du cours/i);
   assert.match(prompt.userText, /iteratif/i);
   assert.match(prompt.userText, /generer un examen nouveau a chaque fois/i);
+  assert.match(prompt.userText, /contextualiser chaque question/i);
+  assert.match(prompt.userText, /exiger de la reflexion/i);
   assert.match(prompt.userText, /criteres de correction exploitables et fins/i);
 });
 
